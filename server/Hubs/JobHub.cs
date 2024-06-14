@@ -1,0 +1,73 @@
+﻿using Microsoft.AspNetCore.SignalR;
+using System.Collections.Concurrent;
+using VslCrmApiRealTime.Models.Requests.Notification;
+using VslCrmApiRealTime.Models.Responses;
+
+namespace VslCrmApiRealTime.Hubs
+{
+    public class JobHub: Hub
+    {
+        // Dictionary to store connection ID based on username
+        private static ConcurrentDictionary<string, string> _connections = new ConcurrentDictionary<string, string>();
+
+        public override async Task OnConnectedAsync()
+        {
+            // Get username from query string of URL
+            var username = Context.GetHttpContext()?.Request.Query["username"].ToString();
+
+            if (!string.IsNullOrEmpty(username)) {
+                // Store connection ID and username into dictionary
+                _connections[username] = Context.ConnectionId;
+            }
+
+            // Add connection ID to group job-notification
+            await Groups.AddToGroupAsync(Context.ConnectionId, "job-notification");
+
+            await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            // Get username from query string of URL
+            var username = Context.GetHttpContext()?.Request.Query["username"].ToString();
+
+            if (!string.IsNullOrEmpty(username))
+            {
+                // Remove connection ID from dictionary
+                _connections.TryRemove(username, out _);
+            }
+
+            // Remove connection ID from group job-notification
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "job-notification");
+            await base.OnDisconnectedAsync(exception);
+        }
+
+        // Method to assign job
+        public async Task NotifyJobAssignment(AssignRequest req)
+        {
+            // Notify sender about the successful job assignment
+            if (_connections.TryGetValue(req.SenderName, out var senderConnectionId))
+            {
+                var res = new NotificationResponse()
+                {
+                    Message = $"Bạn đã giao {req.NumberJob} khách hàng cho {req.ReceiverName} thành công!",
+                    Data = $"Trả về mảng dữ liệu dựa theo thời gian được cung cấp {req.Time}"
+                };
+
+                await Clients.Client(senderConnectionId).SendAsync("JobAssigned", res);
+            }
+
+            // Notify receiver about the new job assignment
+            if (_connections.TryGetValue(req.ReceiverName, out var receiverConnectionId))
+            {
+                var res = new NotificationResponse()
+                {
+                    Message = $"Bạn được {req.SenderName} giao {req.NumberJob} khách hàng!",
+                    Data = $"Trả về mảng dữ liệu dựa theo thời gian được cung cấp {req.Time}"
+                };
+
+                await Clients.Client(receiverConnectionId).SendAsync("NewJob", res);
+            }
+        }
+    }
+}

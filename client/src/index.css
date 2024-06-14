@@ -1,0 +1,185 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+*  * ============== TAILWIND BASE ============== 
+*/
+@layer base {
+    /* * ===== TYPOGRAPHY ===== */
+    *,
+    *::after,
+    *::before {
+        font-family: "Roboto", sans-serif;
+    }
+
+    h1 {
+        @apply font-black text-5xl;
+    }
+
+    h2 {
+        @apply font-bold text-4xl;
+    }
+
+    h3 {
+        @apply font-semibold text-3xl;
+    }
+
+    h4 {
+        @apply font-semibold text-2xl;
+    }
+
+    h5 {
+        @apply font-semibold text-xl;
+    }
+
+    h6 {
+        @apply font-medium text-lg;
+    }
+
+    [role="title"] {
+        @apply font-bold first-letter:uppercase;
+    }
+
+    [role="sub-title"] {
+        @apply font-medium first-letter:uppercase;
+    }
+
+    /* * ===== COLORS ===== */
+    body {
+        @apply text-gray-500;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    [role="title"],
+    [role="sub-title"],
+    [role="heading"],
+    label {
+        @apply text-gray-950;
+    }
+
+    /* * ===== SCROLLBAR ===== */
+    *::-webkit-scrollbar {
+        @apply w-[6px];
+    }
+
+    *::-webkit-scrollbar-track {
+        @apply bg-gray-300;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        @apply bg-gray-400 rounded-lg;
+    }
+}
+
+/**
+*  * ============== TAILWIND UTILITIES ============== 
+*/
+@layer utilities {
+    /* * ===== FONT SIZE ===== */
+    [data-text="xs"] {
+        @apply text-xs;
+    }
+
+    [data-text="sm"] {
+        @apply text-sm;
+    }
+
+    [data-text="base"] {
+        @apply text-base;
+    }
+
+    [data-text="lg"] {
+        @apply text-lg;
+    }
+
+    [data-text="xl"] {
+        @apply text-xl;
+    }
+
+    [data-text="2xl"] {
+        @apply text-2xl;
+    }
+
+    [data-text="3xl"] {
+        @apply text-3xl;
+    }
+
+    [data-text="4xl"] {
+        @apply text-4xl;
+    }
+
+    [data-text="5xl"] {
+        @apply text-5xl;
+    }
+
+    [data-text="6xl"] {
+        @apply text-6xl;
+    }
+
+    [data-text="7xl"] {
+        @apply text-7xl;
+    }
+
+    [data-text="8xl"] {
+        @apply text-8xl;
+    }
+
+    [data-text="9xl"] {
+        @apply text-9xl;
+    }
+
+    /* * ===== BORDER RADIUS ===== */
+    [data-rounded="none"] {
+        @apply rounded-none;
+    }
+
+    [data-rounded="sm"] {
+        @apply rounded-sm;
+    }
+
+    [data-rounded="rounded"] {
+        @apply rounded;
+    }
+
+    [data-rounded="md"] {
+        @apply rounded-md;
+    }
+
+    [data-rounded="lg"] {
+        @apply rounded-lg;
+    }
+
+    [data-rounded="xl"] {
+        @apply rounded-xl;
+    }
+
+    [data-rounded="2xl"] {
+        @apply rounded-2xl;
+    }
+
+    [data-rounded="3xl"] {
+        @apply rounded-3xl;
+    }
+
+    [data-rounded="full"] {
+        @apply rounded-full;
+    }
+
+    /* * ===== DISABLED ===== */
+    [disabled] {
+        @apply opacity-75 cursor-not-allowed;
+    }
+
+    /* * ===== SCROLLBAR ===== */
+    .no-scrollbar::-webkit-scrollbar {
+        @apply w-0;
+    }
+}
