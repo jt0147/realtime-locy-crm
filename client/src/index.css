@@ -50,6 +50,7 @@
     /* * ===== COLORS ===== */
     body {
         @apply text-gray-500;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     }
 
     h1,
@@ -182,4 +183,29 @@
     .no-scrollbar::-webkit-scrollbar {
         @apply w-0;
     }
+}
+
+/* * ===== NAVIGATION ===== */
+.nav {
+    @apply w-full;
+}
+
+.nav-list {
+    @apply flex md:flex-col gap-2 justify-center md:justify-normal items-center md:items-stretch list-none;
+}
+
+.nav-link {
+    @apply w-full flex flex-col md:flex-row gap-2 items-center rounded-lg hover:text-gray-900 focus:text-gray-900 py-2 px-3;
+}
+
+.nav-link.active {
+    @apply bg-[#70BC41]/15 text-[#70BC41];
+}
+
+.nav-icon {
+    @apply w-6 h-6;
+}
+
+.nav-label {
+    @apply text-sm md:text-base capitalize font-semibold leading-none;
 }

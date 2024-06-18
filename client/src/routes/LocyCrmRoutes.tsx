@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { Loading } from "@/components";
-import { NotFound } from "@/layouts";
-import { ForgotPassword, SignIn } from "@/pages";
+import { MainWrapper, NotFound } from "@/layouts";
+import { Customer, Dashboard, ForgotPassword, Report, SignIn } from "@/pages";
 
 import { AuthRoutes, ProtectedRoutes } from "./AdvanceRoutes";
 
@@ -24,18 +24,16 @@ const LocyCrmRoutes = () => {
                         path="/auth/forgot-password"
                         element={<ForgotPassword />}
                     />
+                    <Route element={<MainWrapper />}>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/customer" element={<Customer />} />
+                        <Route path="/report" element={<Report />} />
+                    </Route>
                 </Route>
                 {/* Main routes */}
                 <Route element={<ProtectedRoutes />}>
-                    <Route>
-                        <Route
-                            path="/"
-                            element={
-                                <>
-                                    <p>Dashboard</p>
-                                </>
-                            }
-                        />
+                    <Route element={<MainWrapper />}>
+                        <Route path="/" element={<Dashboard />} />
 
                         <Route
                             path="/settings"
@@ -63,14 +61,7 @@ const LocyCrmRoutes = () => {
                             }
                         />
 
-                        <Route
-                            path="/customer"
-                            element={
-                                <>
-                                    <p>Customer</p>
-                                </>
-                            }
-                        />
+                        <Route path="/customer" element={<Customer />} />
                         <Route
                             path="/customer/new"
                             element={
@@ -97,14 +88,7 @@ const LocyCrmRoutes = () => {
                             }
                         />
 
-                        <Route
-                            path="/report"
-                            element={
-                                <>
-                                    <p>Report</p>
-                                </>
-                            }
-                        />
+                        <Route path="/report" element={<Report />} />
                     </Route>
                 </Route>
                 {/* Routes not found */}
