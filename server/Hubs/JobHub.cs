@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using VslCrmApiRealTime.Data;
 using VslCrmApiRealTime.Models.Requests.Notification;
 using VslCrmApiRealTime.Models.Responses;
 
@@ -9,6 +11,12 @@ namespace VslCrmApiRealTime.Hubs
     {
         // Dictionary to store connection ID based on username
         private static ConcurrentDictionary<string, string> _connections = new ConcurrentDictionary<string, string>();
+        private readonly VslCrmContext _db;
+
+        public JobHub(VslCrmContext db)
+        {
+            _db = db;
+        }
 
         public override async Task OnConnectedAsync()
         {
@@ -66,7 +74,37 @@ namespace VslCrmApiRealTime.Hubs
                     Data = $"Trả về mảng dữ liệu dựa theo thời gian được cung cấp {req.Time}"
                 };
 
-                await Clients.Client(receiverConnectionId).SendAsync("NewJob", res);
+                await Clients.Client(receiverConnectionId).SendAsync("JobAssigned", res);
+            }
+        }
+
+        // Method to choose job
+        public async Task NotifyChooseJob(ChooseRequest req)
+        {
+            var notification = await _db.TblNotifications.Where(x => x.IdNguoiGui == req.IDSender && x.IdNguoiNhan == req.IDReceiver && x.Cd == req.Time).FirstOrDefaultAsync();
+            
+            // Notify sender about the successful job assignment
+            if (_connections.TryGetValue(req.SenderName, out var senderConnectionId))
+            {
+                var res = new NotificationResponse()
+                {
+                    Message = $"Bạn đã nhận {req.NumberJob} khách hàng thành công!",
+                    Data = notification,
+                };
+
+                await Clients.Client(senderConnectionId).SendAsync("JobChoosed", res);
+            }
+
+            // Notify receiver about the new job assignment
+            if (_connections.TryGetValue(req.ReceiverName, out var receiverConnectionId))
+            {
+                var res = new NotificationResponse()
+                {
+                    Message = $"{req.SenderFullName} đã nhận {req.NumberJob} khách hàng!",
+                    Data = notification,
+                };
+
+                await Clients.Client(receiverConnectionId).SendAsync("JobChoosed", res);
             }
         }
     }

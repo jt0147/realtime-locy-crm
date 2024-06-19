@@ -298,10 +298,6 @@ const CustomerFilterModal = ({
         }
     }, [isOpen, initQuery, setQuery]);
 
-    useEffect(() => {
-        console.log(query);
-    }, [query]);
-
     return (
         <Modal size={size} isOpen={isOpen} onClose={onCloseProp}>
             <ModalContent>

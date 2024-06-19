@@ -20,15 +20,15 @@ namespace VslCrmApiRealTime.Controllers
     {
         private readonly ICustomerService _customerService;
         private readonly IEmployeeService _employeeService;
-        /*private readonly ICustomerJobService _customerJobService;
-        private readonly INotificationService _notificationService;*/
+        private readonly ICustomerJobService _customerJobService;
+        private readonly INotificationService _notificationService;
 
-        public CustomerController(ICustomerService customerService, IEmployeeService employeeService/*, ICustomerJobService customerJobService, INotificationService notificationService*/)
+        public CustomerController(ICustomerService customerService, IEmployeeService employeeService, ICustomerJobService customerJobService, INotificationService notificationService)
         {
             _customerService = customerService;
             _employeeService = employeeService;
-            /*_customerJobService = customerJobService;
-            _notificationService = notificationService;*/
+            _customerJobService = customerJobService;
+            _notificationService = notificationService;
         }
 
         /**
@@ -283,14 +283,14 @@ namespace VslCrmApiRealTime.Controllers
         * Method -> Url: [PUT] -> https://localhost:portnumber/api/v2/customer/choose
         * Description: Người dùng thực hiện nhận khách hàng trên hệ thống
         */
-        /*[Authorize]
+        [Authorize]
         [HttpPut]
         [Route("choose")]
         public async Task<IActionResult> ChooseCustomers([FromBody] ChooseCustomerRequest req)
         {
             try
             {
-                var data = await _customerJobService.GetCustomersByIdArray(req.IdCustomers);
+                var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
 
                 if (data == null)
                 {
@@ -299,11 +299,17 @@ namespace VslCrmApiRealTime.Controllers
 
                 await _customerJobService.ChooseCustomers(data, req);
 
+                var notification = await _notificationService.Create(7, req.IDUser, null);
+
                 var response = new Response()
                 {
                     Status = true,
                     Message = "Bạn đã nhận khách hàng thành công",
-                    Data = null,
+                    Data = new {
+                        IDSender = notification?.IdNguoiGui,
+                        IDReceiver = notification?.IdNguoiNhan,
+                        CreatedAt = notification?.Cd,
+                    },
                 };
 
                 return Ok(response);
@@ -319,7 +325,7 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.InternalServerError, "Internal server error", "Lỗi nhận khách hàng trên hệ thống!");
                 }
             }
-        }*/
+        }
 
         /**
         * Method -> Url: [PUT] -> https://localhost:portnumber/api/v2/customer/delivery

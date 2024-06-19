@@ -22,6 +22,12 @@ import { Select } from "@/components";
 import { privateInstance } from "@/configs";
 import { useAuth } from "@/contexts";
 import { useDebounced } from "@/hooks";
+import { CustomerTable } from "@/layouts";
+import {
+    CustomerFilterModal,
+    ExportCustomerModal,
+    ExportCustomerReceiveModal,
+} from "@/modals";
 import {
     TAuthContextProps,
     TCustomerDto,
@@ -30,11 +36,6 @@ import {
 } from "@/types";
 
 import { getListCustomerTable } from "./helper";
-import {
-    CustomerFilterModal,
-    ExportCustomerModal,
-    ExportCustomerReceiveModal,
-} from "@/modals";
 
 type TListType =
     | "all"
@@ -152,7 +153,6 @@ const Customer = () => {
 
     const {
         data: customerRes,
-        isError,
         isFetching,
         isLoading,
         refetch,
@@ -411,6 +411,21 @@ const Customer = () => {
                     </div>
                 </div>
             </div>
+            {query.listType === "all" && (
+                <CustomerTable
+                    data={tableData}
+                    pagination={{
+                        initialPage: pagination.pageIndex + 1,
+                        total: Math.ceil(totalRow / pagination.pageSize),
+                        onPaginationChange: (page) =>
+                            setPagination((prev) => ({
+                                ...prev,
+                                pageIndex: page - 1,
+                            })),
+                    }}
+                    loading={isFetching || isLoading}
+                />
+            )}
             {(user?.permission.includes("1048576") ||
                 user?.permission.includes("7000") ||
                 user?.permission.includes("7060")) && (

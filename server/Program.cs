@@ -75,6 +75,9 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICustomerJobService, CustomerJobService>();
+
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // Add background service
 builder.Services.AddHostedService<JobSchedulerBackground>();

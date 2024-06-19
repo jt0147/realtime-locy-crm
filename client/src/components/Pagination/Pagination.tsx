@@ -4,7 +4,7 @@ import { TPaginationProps } from "./types";
 
 const Pagination = ({
     showControls = true,
-    loop,
+    loop = true,
     color = "success",
     total,
     initialPage,

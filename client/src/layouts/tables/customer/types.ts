@@ -19,5 +19,4 @@ export type TCustomerTableProps = {
         total: number;
         initialPage: number;
     };
-    size: number;
 };

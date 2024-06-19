@@ -39,7 +39,7 @@ const Header = () => {
 
     return (
         <>
-            <header className="bg-gradient-to-r from-emerald-900 to-emerald-600 text-white p-4 md:rounded-lg shadow-md sticky top-0 left-0 w-full">
+            <header className="bg-gradient-to-r from-emerald-900 to-emerald-600 text-white p-4 md:rounded-lg shadow-md sticky top-0 left-0 w-full z-[40]">
                 <div className="flex justify-between items-center gap-2">
                     <div></div>
                     <div className="flex gap-1 items-center">
