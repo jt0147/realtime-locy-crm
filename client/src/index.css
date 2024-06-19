@@ -78,6 +78,10 @@
     *::-webkit-scrollbar-thumb {
         @apply bg-gray-400 rounded-lg;
     }
+
+    button {
+        @apply leading-none;
+    }
 }
 
 /**
@@ -208,4 +212,13 @@
 
 .nav-label {
     @apply text-sm md:text-base capitalize font-semibold leading-none;
+}
+
+/* * ===== TYPOGRAPHY ===== */
+.title {
+    @apply first-letter:uppercase text-gray-900 text-xl font-bold;
+}
+
+.sub-title {
+    @apply first-letter:uppercase text-gray-700 text-lg font-medium;
 }

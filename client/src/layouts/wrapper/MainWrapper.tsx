@@ -7,7 +7,7 @@ const MainWrapper = () => {
             <Sidebar />
             <div className="flex-1 flex-shrink-0 overflow-x-hidden overflow-y-auto no-scrollbar relative">
                 <Header />
-                <div className="space-y-8">
+                <div className="space-y-4">
                     <Outlet />
                 </div>
             </div>

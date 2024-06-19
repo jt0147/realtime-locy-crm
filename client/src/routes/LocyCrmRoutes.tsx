@@ -24,11 +24,6 @@ const LocyCrmRoutes = () => {
                         path="/auth/forgot-password"
                         element={<ForgotPassword />}
                     />
-                    <Route element={<MainWrapper />}>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/customer" element={<Customer />} />
-                        <Route path="/report" element={<Report />} />
-                    </Route>
                 </Route>
                 {/* Main routes */}
                 <Route element={<ProtectedRoutes />}>

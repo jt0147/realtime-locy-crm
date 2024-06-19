@@ -70,6 +70,12 @@ builder.Services.AddScoped<ISysOptionService, SysOptionService>();
 builder.Services.AddScoped<IAuthService<TblSysUser>, AuthService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
 // Add background service
 builder.Services.AddHostedService<JobSchedulerBackground>();
 
@@ -98,8 +104,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<ErrorHandleMiddleware>();
-
-app.UseRouting();
 
 app.MapHub<JobHub>("/api/v2/job");
 

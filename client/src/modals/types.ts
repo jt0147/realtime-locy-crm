@@ -16,6 +16,7 @@ export type TModalProps = {
     onSubmit: () => void | Promise<void>;
     title?: string;
     size?: TSizeModal;
+    loading?: boolean;
 };
 
 type TWidth =
