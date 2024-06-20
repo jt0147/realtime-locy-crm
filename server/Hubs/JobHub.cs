@@ -53,13 +53,15 @@ namespace VslCrmApiRealTime.Hubs
         // Method to assign job
         public async Task NotifyJobAssignment(AssignRequest req)
         {
+            var notification = await _db.TblNotifications.Where(x => x.Id == req.IDNotification).FirstOrDefaultAsync();
+
             // Notify sender about the successful job assignment
             if (_connections.TryGetValue(req.SenderName, out var senderConnectionId))
             {
                 var res = new NotificationResponse()
                 {
                     Message = $"Bạn đã giao {req.NumberJob} khách hàng cho {req.ReceiverName} thành công!",
-                    Data = $"Trả về mảng dữ liệu dựa theo thời gian được cung cấp {req.Time}"
+                    Data = notification,
                 };
 
                 await Clients.Client(senderConnectionId).SendAsync("JobAssigned", res);
@@ -71,7 +73,7 @@ namespace VslCrmApiRealTime.Hubs
                 var res = new NotificationResponse()
                 {
                     Message = $"Bạn được {req.SenderName} giao {req.NumberJob} khách hàng!",
-                    Data = $"Trả về mảng dữ liệu dựa theo thời gian được cung cấp {req.Time}"
+                    Data = notification,
                 };
 
                 await Clients.Client(receiverConnectionId).SendAsync("JobAssigned", res);
@@ -81,7 +83,7 @@ namespace VslCrmApiRealTime.Hubs
         // Method to choose job
         public async Task NotifyChooseJob(ChooseRequest req)
         {
-            var notification = await _db.TblNotifications.Where(x => x.IdNguoiGui == req.IDSender && x.IdNguoiNhan == req.IDReceiver && x.Cd == req.Time).FirstOrDefaultAsync();
+            var notification = await _db.TblNotifications.Where(x => x.Id == req.IDNotification).FirstOrDefaultAsync();
             
             // Notify sender about the successful job assignment
             if (_connections.TryGetValue(req.SenderName, out var senderConnectionId))

@@ -11,5 +11,6 @@ namespace VslCrmApiRealTime.Interfaces
         Task UndeliveryCustomers(List<TblDmcustomer> data, UndeliveryCustomerRequest req);
         Task AcceptCustomers(List<TblDmcustomer> data, AcceptCustomerRequest req);
         Task DenyCustomers(List<TblDmcustomer> data, DenyCustomerRequest req);
+        Task<bool> IsReceivedCustomer(long idEmployee, int count);
     }
 }

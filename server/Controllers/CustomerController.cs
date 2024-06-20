@@ -290,6 +290,11 @@ namespace VslCrmApiRealTime.Controllers
         {
             try
             {
+                var isReceived = await _customerJobService.IsReceivedCustomer(req.IDEmployee, req.IDCustomers.Length);
+                if(!isReceived)
+                {
+                    throw new ErrorException((int)HttpStatusCode.MethodNotAllowed, "Method not allowed", "Bạn không thể nhận khách hàng vì quá số lượng khách hàng bạn quản lý!");
+                }
                 var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
 
                 if (data == null)
@@ -305,10 +310,9 @@ namespace VslCrmApiRealTime.Controllers
                 {
                     Status = true,
                     Message = "Bạn đã nhận khách hàng thành công",
-                    Data = new {
-                        IDSender = notification?.IdNguoiGui,
-                        IDReceiver = notification?.IdNguoiNhan,
-                        CreatedAt = notification?.Cd,
+                    Data = new
+                    {
+                        IDNotification = notification?.Id,
                     },
                 };
 
@@ -331,16 +335,22 @@ namespace VslCrmApiRealTime.Controllers
         * Method -> Url: [PUT] -> https://localhost:portnumber/api/v2/customer/delivery
         * Description: Người dùng thực hiện giao khách hàng trên hệ thống
         */
-        /*[Authorize("DeliveryCustomer")]
+        [Authorize("DeliveryCustomer")]
         [HttpPut]
         [Route("delivery")]
         public async Task<IActionResult> DeliveryCustomers([FromBody] DeliveryCustomerRequest req)
         {
             try
             {
+                var isReceived = await _customerJobService.IsReceivedCustomer(req.IDEmployee, req.IDCustomers.Length);
+                if (!isReceived)
+                {
+                    throw new ErrorException((int)HttpStatusCode.MethodNotAllowed, "Method not allowed", $"Bạn không thể giao khách hàng vì quá số lượng khách hàng mà nhân viên này quản lý!");
+                }
+
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 var idUser = long.Parse(identity?.Claims.FirstOrDefault(o => o.Type == "Id")?.Value ?? "0");
-                var data = await _customerJobService.GetCustomersByIdArray(req.IdCustomers);
+                var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
 
                 if (data == null)
                 {
@@ -349,13 +359,16 @@ namespace VslCrmApiRealTime.Controllers
 
                 await _customerJobService.DeliveryCustomers(data, req);
 
-                var notification = await _notificationService.Create(idUser, req.IDAccountEmployee, 6);
+                var notification = await _notificationService.Create(6, idUser, req.IDAccountEmployee);
 
                 var response = new Response()
                 {
                     Status = true,
                     Message = "Bạn đã giao khách hàng thành công",
-                    Data = null,
+                    Data = new
+                    {
+                        IDNotification = notification?.Id,
+                    },
                 };
 
                 return Ok(response);
@@ -371,13 +384,13 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.InternalServerError, "Internal server error", "Lỗi giao khách hàng trên hệ thống!");
                 }
             }
-        }*/
+        }
 
         /**
         * Method -> Url: [PUT] -> https://localhost:portnumber/api/v2/customer/undelivery
         * Description: Người dùng thực hiện huỷ giao khách hàng trên hệ thống
         */
-        /*[Authorize]
+        [Authorize]
         [HttpPut]
         [Route("undelivery")]
         public async Task<IActionResult> UndeliveryCustomers([FromBody] UndeliveryCustomerRequest req)
@@ -413,7 +426,7 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.InternalServerError, "Internal server error", "Lỗi huỷ giao khách hàng trên hệ thống!");
                 }
             }
-        }*/
+        }
 
         /**
         * Method -> Url: [PUT] -> https://localhost:portnumber/api/v2/customer/accept

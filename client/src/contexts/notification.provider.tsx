@@ -7,6 +7,7 @@ import {
 
 import { privateInstance } from "@/configs";
 import { TAuthContextProps, TNotificationProps } from "@/types";
+import { notification } from "@/utilities";
 
 import { useAuth } from "./auth.context";
 import { NotificationContext } from "./notification.context";
@@ -19,7 +20,9 @@ const NotificationProvider = ({ children }: TProviderProps) => {
         const baseUrl = privateInstance.defaults.baseURL;
 
         const newConnection = new HubConnectionBuilder()
-            .withUrl(`${baseUrl}/job?username=${user?.username}`)
+            .withUrl(
+                `${baseUrl}/job?username=${user?.username.toLocaleLowerCase()}`
+            )
             .configureLogging(LogLevel.Information)
             .withAutomaticReconnect()
             .build();
@@ -45,12 +48,18 @@ const NotificationProvider = ({ children }: TProviderProps) => {
 
                     // Check connectionId after start
                     if (connection.connectionId) {
-                        connection.on("JobAssigned", function (message) {
-                            console.log(message);
+                        connection.on("JobAssigned", function (payload) {
+                            console.log(payload);
+                            if (user.id !== payload.data.idNguoiGui) {
+                                notification(true, payload.message);
+                            }
                         });
 
-                        connection.on("NewJob", function (message) {
-                            console.log(message);
+                        connection.on("JobChoosed", function (payload) {
+                            console.log(payload);
+                            if (user.id !== payload.data.idNguoiGui) {
+                                notification(true, payload.message);
+                            }
                         });
                     }
 

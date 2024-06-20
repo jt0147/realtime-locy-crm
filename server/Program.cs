@@ -79,6 +79,29 @@ builder.Services.AddScoped<ICustomerJobService, CustomerJobService>();
 
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
+// Add authorization role
+builder.Services.AddAuthorization(option =>
+{
+    option.AddPolicy("ManageEmployee", policy => policy.RequireAssertion(context =>
+        context.User.HasClaim(claim => claim.Type == "Permission" && (claim.Value.Contains("1048576") || claim.Value.Contains("5000")))
+    ));
+    option.AddPolicy("ManageCategory", policy => policy.RequireAssertion(context =>
+        context.User.HasClaim(claim => claim.Type == "Permission" && (claim.Value.Contains("1048576") || claim.Value.Contains("6000")))
+    ));
+    option.AddPolicy("ManageCustomer", policy => policy.RequireAssertion(context =>
+        context.User.HasClaim(claim => claim.Type == "Permission" && (claim.Value.Contains("1048576") || claim.Value.Contains("7000") || claim.Value.Contains("7020")))
+    ));
+    option.AddPolicy("DeliveryCustomer", policy => policy.RequireAssertion(context =>
+        context.User.HasClaim(claim => claim.Type == "Permission" && (claim.Value.Contains("1048576") || claim.Value.Contains("7000") || claim.Value.Contains("7080")))
+    ));
+    option.AddPolicy("ImportCustomer", policy => policy.RequireAssertion(context =>
+        context.User.HasClaim(claim => claim.Type == "Permission" && (claim.Value.Contains("1048576") || claim.Value.Contains("7000") || claim.Value.Contains("7040")))
+    ));
+    option.AddPolicy("ExportCustomer", policy => policy.RequireAssertion(context =>
+        context.User.HasClaim(claim => claim.Type == "Permission" && (claim.Value.Contains("1048576") || claim.Value.Contains("7000") || claim.Value.Contains("7060")))
+    ));
+});
+
 // Add background service
 builder.Services.AddHostedService<JobSchedulerBackground>();
 

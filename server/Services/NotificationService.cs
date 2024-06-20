@@ -12,14 +12,15 @@ namespace VslCrmApiRealTime.Services
             _db = db;
         }
 
-        public async Task<TblNotification?> Create(long IdTypeNotification, long IDSender, long? IDReceive)
+        public async Task<TblNotification?> Create(long IdTypeNotification, long IDSender, long? IDReceiver)
         {
             var data = new TblNotification()
             {
                 IdNguoiGui = IDSender,
-                IdNguoiNhan = IdTypeNotification >= 7 && IdTypeNotification <= 9 ? _db.TblSysUsers.Where(x => x.UserName == "admin").Select(x => x.Id).FirstOrDefault() : IDReceive,
+                IdNguoiNhan = IDReceiver == null ? _db.TblSysUsers.Where(x => x.UserName != null && x.UserName == "Admin").Select(x => x.Id).FirstOrDefault() : IDReceiver,
                 IdLoaiNotification = IdTypeNotification,
                 KieuDoiTuongLienQuan = "tblDMCustomer",
+                Cd = DateTime.Now,
             };
 
             await _db.TblNotifications.AddAsync(data);

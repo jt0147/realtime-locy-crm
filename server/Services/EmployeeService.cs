@@ -193,10 +193,11 @@ namespace VslCrmApiRealTime.Services
         {
             List<EmployeeJobDto>? data = await _db.TblSysUsers.Where(x => x.IdnhanVienNavigation != null && x.IdnhanVienNavigation.FlagDelete != true).Select(x => new EmployeeJobDto()
             {
-                Id = x.Id,
+                ID = x.Id,
+                Username = x.UserName ?? "",
                 FullNameVI = x.IdnhanVienNavigation != null ? (x.IdnhanVienNavigation.HoTenVI ?? "") : "",
                 FullNameEN = x.IdnhanVienNavigation != null ? (x.IdnhanVienNavigation.HoTenEN ?? "") : "",
-                IDAccount = x.Id,
+                IDEmployee = x.IdnhanVien,
             }).ToListAsync();
             return data;
         }
@@ -206,13 +207,14 @@ namespace VslCrmApiRealTime.Services
             List<EmployeeJobDto>? dataList = await _db.TblSysUsers.AsNoTracking().Where(x => x.IdnhanVienNavigation != null && x.IdnhanVienNavigation.FlagDelete != true)
                                                .Select(x => new EmployeeJobDto()
                                                {
-                                                   Id = x.Id,
+                                                   ID = x.Id,
+                                                   Username = x.UserName ?? "",
                                                    FullNameVI = x.IdnhanVienNavigation != null ? (x.IdnhanVienNavigation.HoTenVI ?? "") : "",
                                                    FullNameEN = x.IdnhanVienNavigation != null ? (x.IdnhanVienNavigation.HoTenEN ?? "") : "",
-                                                   IDAccount = x.Id,
+                                                   IDEmployee = x.IdnhanVien,
                                                })
                                                .ToListAsync();
-            var data = dataList.Where(x => ids != null && ids.Contains(x.Id)).ToList();
+            var data = dataList.Where(x => ids != null && ids.Contains(x.ID)).ToList();
             return data;
         }
 

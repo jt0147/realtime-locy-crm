@@ -90,6 +90,17 @@ namespace VslCrmApiRealTime.Services
             return data;
         }
 
+        public async Task<bool> IsReceivedCustomer(long idEmployee, int count)
+        {
+            var maxTotalCustomer = await _db.TblNhanSus.Where(x => x.Id ==  idEmployee).Select(x => x.SoLuongKh).FirstOrDefaultAsync() ?? await _db.TblSysOptions.Select(x => x.SoLuongKh).FirstOrDefaultAsync();
+            var totalCustomer = await _db.TblDmcustomers.Where(x => x.IdnhanVienSale == idEmployee).CountAsync();
+            if(totalCustomer + count > maxTotalCustomer)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task UndeliveryCustomers(List<TblDmcustomer> data, UndeliveryCustomerRequest req)
         {
             foreach (var item in data)

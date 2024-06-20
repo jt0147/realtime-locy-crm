@@ -6,8 +6,6 @@
         public required string SenderFullName { get; set; }
         public required string ReceiverName { get; set; }
         public int NumberJob { get; set; }
-        public required long IDSender { get; set; }
-        public required long IDReceiver { get; set; }
-        public DateTime? Time { get; set; }
+        public required long IDNotification { get; set; }
     }
 }

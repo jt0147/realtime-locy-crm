@@ -424,6 +424,7 @@ const Customer = () => {
                             })),
                     }}
                     loading={isFetching || isLoading}
+                    refetch={() => refetch()}
                 />
             )}
             {(user?.permission.includes("1048576") ||

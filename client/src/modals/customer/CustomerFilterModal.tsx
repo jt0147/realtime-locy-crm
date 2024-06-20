@@ -10,7 +10,7 @@ import {
     Input,
 } from "@nextui-org/react";
 
-import { Select } from "@/components";
+import { AutoComplete, Select } from "@/components";
 import {
     TBusinessDto,
     TCountryDto,
@@ -226,6 +226,10 @@ const CustomerFilterModal = ({
             hsCode: "",
             type: "",
         }));
+        setPortsRouteFrom([]);
+        setPortsRouteTo([]);
+        setPortsImExFrom([]);
+        setPortsImExTo([]);
     };
 
     useEffect(() => {
@@ -431,7 +435,7 @@ const CustomerFilterModal = ({
                                     thông tin tuyến hàng
                                 </h4>
                                 <div className="grid md:grid-cols-4 gap-4">
-                                    <Select
+                                    <AutoComplete
                                         label="Quốc gia đi"
                                         options={countries}
                                         option={{
@@ -442,21 +446,21 @@ const CustomerFilterModal = ({
                                             query.idFromCountryRoute?.toString() ||
                                             ""
                                         }
-                                        onChange={(e) => {
+                                        onSelectionChange={(val) => {
                                             setQuery((prev) => ({
                                                 ...prev,
                                                 idFromCountryRoute:
-                                                    e.target.value !== ""
+                                                    val !== ""
                                                         ? parseInt(
-                                                              e.target.value
+                                                              val as string
                                                           )
                                                         : undefined,
                                             }));
                                         }}
                                     />
-                                    <Select
+                                    <AutoComplete
                                         label="Cảng đi"
-                                        options={portsRouteTo}
+                                        options={portsRouteFrom}
                                         option={{
                                             label: "nameVI",
                                             key: "id",
@@ -465,19 +469,19 @@ const CustomerFilterModal = ({
                                             query.idFromPortRoute?.toString() ||
                                             ""
                                         }
-                                        onChange={(e) => {
+                                        onSelectionChange={(val) => {
                                             setQuery((prev) => ({
                                                 ...prev,
                                                 idFromPortRoute:
-                                                    e.target.value !== ""
+                                                    val !== ""
                                                         ? parseInt(
-                                                              e.target.value
+                                                              val as string
                                                           )
                                                         : undefined,
                                             }));
                                         }}
                                     />
-                                    <Select
+                                    <AutoComplete
                                         label="Quốc gia đến"
                                         options={countries}
                                         option={{
@@ -488,21 +492,21 @@ const CustomerFilterModal = ({
                                             query.idToCountryRoute?.toString() ||
                                             ""
                                         }
-                                        onChange={(e) => {
+                                        onSelectionChange={(val) => {
                                             setQuery((prev) => ({
                                                 ...prev,
                                                 idToCountryRoute:
-                                                    e.target.value !== ""
+                                                    val !== ""
                                                         ? parseInt(
-                                                              e.target.value
+                                                              val as string
                                                           )
                                                         : undefined,
                                             }));
                                         }}
                                     />
-                                    <Select
+                                    <AutoComplete
                                         label="Cảng đến"
-                                        options={portsRouteFrom}
+                                        options={portsRouteTo}
                                         option={{
                                             label: "nameVI",
                                             key: "id",
@@ -511,13 +515,13 @@ const CustomerFilterModal = ({
                                             query.idToPortRoute?.toString() ||
                                             ""
                                         }
-                                        onChange={(e) => {
+                                        onSelectionChange={(val) => {
                                             setQuery((prev) => ({
                                                 ...prev,
                                                 idToPortRoute:
-                                                    e.target.value !== ""
+                                                    val !== ""
                                                         ? parseInt(
-                                                              e.target.value
+                                                              val as string
                                                           )
                                                         : undefined,
                                             }));
@@ -534,7 +538,7 @@ const CustomerFilterModal = ({
                                     thông tin xuất nhập khẩu
                                 </h4>
                                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                    <Select
+                                    <AutoComplete
                                         label="Quốc gia đi"
                                         options={countries}
                                         option={{
@@ -545,19 +549,19 @@ const CustomerFilterModal = ({
                                             query.idFromCountryImEx?.toString() ||
                                             ""
                                         }
-                                        onChange={(e) => {
+                                        onSelectionChange={(val) => {
                                             setQuery((prev) => ({
                                                 ...prev,
                                                 idFromCountryImEx:
-                                                    e.target.value !== ""
+                                                    val !== ""
                                                         ? parseInt(
-                                                              e.target.value
+                                                              val as string
                                                           )
                                                         : undefined,
                                             }));
                                         }}
                                     />
-                                    <Select
+                                    <AutoComplete
                                         label="Cảng đi"
                                         options={portsImExFrom}
                                         option={{
@@ -568,19 +572,19 @@ const CustomerFilterModal = ({
                                             query.idFromPortImEx?.toString() ||
                                             ""
                                         }
-                                        onChange={(e) => {
+                                        onSelectionChange={(val) => {
                                             setQuery((prev) => ({
                                                 ...prev,
                                                 idFromPortImEx:
-                                                    e.target.value !== ""
+                                                    val !== ""
                                                         ? parseInt(
-                                                              e.target.value
+                                                              val as string
                                                           )
                                                         : undefined,
                                             }));
                                         }}
                                     />
-                                    <Select
+                                    <AutoComplete
                                         label="Quốc gia đến"
                                         options={countries}
                                         option={{
@@ -591,19 +595,19 @@ const CustomerFilterModal = ({
                                             query.idToCountryImEx?.toString() ||
                                             ""
                                         }
-                                        onChange={(e) => {
+                                        onSelectionChange={(val) => {
                                             setQuery((prev) => ({
                                                 ...prev,
                                                 idToCountryImEx:
-                                                    e.target.value !== ""
+                                                    val !== ""
                                                         ? parseInt(
-                                                              e.target.value
+                                                              val as string
                                                           )
                                                         : undefined,
                                             }));
                                         }}
                                     />
-                                    <Select
+                                    <AutoComplete
                                         label="Cảng đến"
                                         options={portsImExTo}
                                         option={{
@@ -611,13 +615,13 @@ const CustomerFilterModal = ({
                                             key: "id",
                                         }}
                                         value={query.idToPortImEx?.toString()}
-                                        onChange={(e) => {
+                                        onSelectionChange={(val) => {
                                             setQuery((prev) => ({
                                                 ...prev,
                                                 idToPortImEx:
-                                                    e.target.value !== ""
+                                                    val !== ""
                                                         ? parseInt(
-                                                              e.target.value
+                                                              val as string
                                                           )
                                                         : undefined,
                                             }));

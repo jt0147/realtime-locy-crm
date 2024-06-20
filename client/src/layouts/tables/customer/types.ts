@@ -3,6 +3,7 @@ import { TCustomerDto, TTableData } from "@/types";
 export type TCustomerTableProps = {
     data: TTableData<TCustomerDto>;
     loading?: boolean;
+    refetch: () => void;
 
     // Pagination
     pagination: {

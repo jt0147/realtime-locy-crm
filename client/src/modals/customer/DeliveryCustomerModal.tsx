@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import {
     Button,
     Modal,
@@ -9,13 +10,15 @@ import {
 
 import { TModalProps } from "../types";
 
-const LogOutModal = ({
+const DeliveryCustomerModal = ({
     isOpen,
     onClose: onCloseProp,
     onSubmit,
-    title = "modal title",
+    title = "giao khách",
     size = "md",
-}: TModalProps) => {
+    loading,
+    children,
+}: TModalProps & { children: ReactNode }) => {
     return (
         <Modal size={size} isOpen={isOpen} onClose={onCloseProp}>
             <ModalContent>
@@ -26,11 +29,7 @@ const LogOutModal = ({
                                 {title}
                             </div>
                         </ModalHeader>
-                        <ModalBody>
-                            <p className="text-gray-900 first-letter:uppercase">
-                                bạn có muốn đăng xuất
-                            </p>
-                        </ModalBody>
+                        <ModalBody className="space-y-6">{children}</ModalBody>
                         <ModalFooter>
                             <Button
                                 color="danger"
@@ -43,8 +42,10 @@ const LogOutModal = ({
                                 className="text-white"
                                 color="success"
                                 onPress={onSubmit}
+                                isLoading={loading}
+                                disabled={loading}
                             >
-                                Đăng xuất
+                                {loading ? "Đang giao..." : "Giao khách"}
                             </Button>
                         </ModalFooter>
                     </>
@@ -54,4 +55,4 @@ const LogOutModal = ({
     );
 };
 
-export default LogOutModal;
+export default DeliveryCustomerModal;

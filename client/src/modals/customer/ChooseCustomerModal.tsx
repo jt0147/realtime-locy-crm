@@ -9,12 +9,13 @@ import {
 
 import { TModalProps } from "../types";
 
-const LogOutModal = ({
+const ChooseCustomerModal = ({
     isOpen,
     onClose: onCloseProp,
     onSubmit,
-    title = "modal title",
+    title = "nhận khách",
     size = "md",
+    loading,
 }: TModalProps) => {
     return (
         <Modal size={size} isOpen={isOpen} onClose={onCloseProp}>
@@ -28,7 +29,7 @@ const LogOutModal = ({
                         </ModalHeader>
                         <ModalBody>
                             <p className="text-gray-900 first-letter:uppercase">
-                                bạn có muốn đăng xuất
+                                bạn chắc chắn muốn nhận khách?
                             </p>
                         </ModalBody>
                         <ModalFooter>
@@ -43,8 +44,10 @@ const LogOutModal = ({
                                 className="text-white"
                                 color="success"
                                 onPress={onSubmit}
+                                isLoading={loading}
+                                disabled={loading}
                             >
-                                Đăng xuất
+                                {loading ? "Đang nhận..." : "Nhận khách"}
                             </Button>
                         </ModalFooter>
                     </>
@@ -54,4 +57,4 @@ const LogOutModal = ({
     );
 };
 
-export default LogOutModal;
+export default ChooseCustomerModal;

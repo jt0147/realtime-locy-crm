@@ -44,6 +44,7 @@ export type TDeleteCustomerRequest = {
 
 // Job
 export type TChooseCustomerRequest = {
+    idUser: number;
     idEmployee: number;
     idCustomers: number[];
 };
