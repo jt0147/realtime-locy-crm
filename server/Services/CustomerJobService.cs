@@ -101,6 +101,23 @@ namespace VslCrmApiRealTime.Services
             return true;
         }
 
+        public async Task ReturnCustomers(List<TblDmcustomer> data, ReturnCustomerRequest req)
+        {
+            foreach (var item in data)
+            {
+                item.IdnhanVienSale = null;
+                item.IduserGiaoViec = null;
+                item.ThongTinGiaoViec = "";
+                item.EnumGiaoNhan = 0;
+                item.NgayGiao = null;
+                item.NgayNhan = null;
+                item.NgayKetThucNhan = null;
+                item.LyDoTuChoi = null;
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
         public async Task UndeliveryCustomers(List<TblDmcustomer> data, UndeliveryCustomerRequest req)
         {
             foreach (var item in data)

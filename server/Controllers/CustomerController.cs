@@ -432,14 +432,14 @@ namespace VslCrmApiRealTime.Controllers
         * Method -> Url: [PUT] -> https://localhost:portnumber/api/v2/customer/accept
         * Description: Người dùng thực hiện nhận khách hàng trên hệ thống
         */
-        /*[Authorize]
+        [Authorize]
         [HttpPut]
         [Route("accept")]
         public async Task<IActionResult> AcceptCustomers([FromBody] AcceptCustomerRequest req)
         {
             try
             {
-                var data = await _customerJobService.GetCustomersByIdArray(req.IdCustomers);
+                var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
 
                 if (data == null)
                 {
@@ -453,11 +453,16 @@ namespace VslCrmApiRealTime.Controllers
 
                 await _customerJobService.AcceptCustomers(data, req);
 
+                var notification = await _notificationService.Create(7, req.IDUser, null);
+
                 var response = new Response()
                 {
                     Status = true,
                     Message = "Bạn đã nhận khách hàng thành công",
-                    Data = null,
+                    Data = new
+                    {
+                        IDNotification = notification?.Id,
+                    },
                 };
 
                 return Ok(response);
@@ -473,20 +478,67 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.InternalServerError, "Internal server error", "Lỗi nhận khách hàng trên hệ thống!");
                 }
             }
-        }*/
+        }
+
+        /**
+        * Method -> Url: [PUT] -> https://localhost:portnumber/api/v2/customer/return
+        * Description: Người dùng thực hiện huỷ giao khách hàng trên hệ thống
+        */
+        [Authorize]
+        [HttpPut]
+        [Route("return")]
+        public async Task<IActionResult> ReturnCustomers([FromBody] ReturnCustomerRequest req)
+        {
+            try
+            {
+                var data = await _customerJobService.GetCustomersByIdArray(req.IdCustomers);
+
+                if (data == null)
+                {
+                    throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi trả khách hàng về kho trên hệ thống!");
+                }
+
+                await _customerJobService.ReturnCustomers(data, req);
+
+                var notification = await _notificationService.Create(8, req.IDUser, null);
+
+                var response = new Response()
+                {
+                    Status = true,
+                    Message = "Bạn đã trả khách hàng về kho thành công",
+                    Data = new
+                    {
+                        IDNotification = notification?.Id,
+                    },
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                if (e is ErrorException errorException)
+                {
+                    throw errorException;
+                }
+                else
+                {
+                    throw new ErrorException((int)HttpStatusCode.InternalServerError, "Internal server error", "Lỗi trả khách hàng về kho trên hệ thống!");
+                }
+            }
+        }
 
         /**
         * Method -> Url: [PUT] -> https://localhost:portnumber/api/v2/customer/deny
         * Description: Người dùng thực hiện từ chối khách hàng trên hệ thống
         */
-        /*[Authorize]
+        [Authorize]
         [HttpPut]
         [Route("deny")]
         public async Task<IActionResult> DenyCustomers([FromBody] DenyCustomerRequest req)
         {
             try
             {
-                var data = await _customerJobService.GetCustomersByIdArray(req.IdCustomers);
+                var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
 
                 if (data == null)
                 {
@@ -500,11 +552,16 @@ namespace VslCrmApiRealTime.Controllers
 
                 await _customerJobService.DenyCustomers(data, req);
 
+                var notification = await _notificationService.Create(9, req.IDUser, null);
+
                 var response = new Response()
                 {
                     Status = true,
                     Message = "Bạn đã từ chối khách hàng thành công",
-                    Data = null,
+                    Data = new
+                    {
+                        IDNotification = notification?.Id,
+                    },
                 };
 
                 return Ok(response);
@@ -520,6 +577,6 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.InternalServerError, "Internal server error", "Lỗi từ chối khách hàng trên hệ thống!");
                 }
             }
-        }*/
+        }
     }
 }
