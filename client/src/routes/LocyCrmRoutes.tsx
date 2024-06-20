@@ -3,7 +3,14 @@ import { Routes, Route } from "react-router-dom";
 
 import { Loading } from "@/components";
 import { MainWrapper, NotFound } from "@/layouts";
-import { Customer, Dashboard, ForgotPassword, Report, SignIn } from "@/pages";
+import {
+    CreateCustomer,
+    Customer,
+    Dashboard,
+    ForgotPassword,
+    Report,
+    SignIn,
+} from "@/pages";
 
 import { AuthRoutes, ProtectedRoutes } from "./AdvanceRoutes";
 
@@ -59,11 +66,7 @@ const LocyCrmRoutes = () => {
                         <Route path="/customer" element={<Customer />} />
                         <Route
                             path="/customer/new"
-                            element={
-                                <>
-                                    <p>Create Customer</p>
-                                </>
-                            }
+                            element={<CreateCustomer />}
                         />
                         <Route
                             path="/customer/:id"

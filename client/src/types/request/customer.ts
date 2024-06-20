@@ -62,12 +62,19 @@ export type TUndeliveryCustomerRequest = {
 };
 
 export type TAcceptCustomerRequest = {
+    idUser: number;
     idEmployee: number;
     idCustomers: number[];
 };
 
 export type TDenyCustomerRequest = {
+    idUser: number;
     idEmployee: number;
     idCustomers: number[];
     reasonForDeny: string;
+};
+
+export type TReturnCustomerRequest = {
+    idUser: number;
+    idCustomers: number[];
 };

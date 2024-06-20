@@ -22,7 +22,14 @@ import { Select } from "@/components";
 import { privateInstance } from "@/configs";
 import { useAuth } from "@/contexts";
 import { useDebounced } from "@/hooks";
-import { CustomerTable } from "@/layouts";
+import {
+    CustomerAssignedTable,
+    CustomerDeleteTable,
+    CustomerDeliveredTable,
+    CustomerReceivedTable,
+    CustomerTable,
+    CustomerUndeliveredTable,
+} from "@/layouts";
 import {
     CustomerFilterModal,
     ExportCustomerModal,
@@ -135,7 +142,7 @@ const Customer = () => {
 
     const { user }: TAuthContextProps = useAuth();
 
-    const navitage = useNavigate();
+    const navigate = useNavigate();
 
     const debouncedName = useDebounced(query.name, 1000);
     const debouncedTaxCode = useDebounced(query.taxCode, 1000);
@@ -336,7 +343,7 @@ const Customer = () => {
                     <Button
                         className="inline-block first-letter:uppercase text-white"
                         color="success"
-                        onClick={() => navitage("/customer/new")}
+                        onClick={() => navigate("/customer/new")}
                     >
                         tạo mới
                     </Button>
@@ -411,6 +418,7 @@ const Customer = () => {
                     </div>
                 </div>
             </div>
+            {/* Table */}
             {query.listType === "all" && (
                 <CustomerTable
                     data={tableData}
@@ -427,6 +435,94 @@ const Customer = () => {
                     refetch={() => refetch()}
                 />
             )}
+            {query.listType === "assigned" &&
+                (user?.permission.includes("1048576") ||
+                    user?.permission.includes("7000") ||
+                    user?.permission.includes("7080")) && (
+                    <CustomerAssignedTable
+                        data={tableData}
+                        pagination={{
+                            initialPage: pagination.pageIndex + 1,
+                            total: Math.ceil(totalRow / pagination.pageSize),
+                            onPaginationChange: (page) =>
+                                setPagination((prev) => ({
+                                    ...prev,
+                                    pageIndex: page - 1,
+                                })),
+                        }}
+                        loading={isFetching || isLoading}
+                        refetch={() => refetch()}
+                    />
+                )}
+            {query.listType === "received" && (
+                <CustomerReceivedTable
+                    data={tableData}
+                    pagination={{
+                        initialPage: pagination.pageIndex + 1,
+                        total: Math.ceil(totalRow / pagination.pageSize),
+                        onPaginationChange: (page) =>
+                            setPagination((prev) => ({
+                                ...prev,
+                                pageIndex: page - 1,
+                            })),
+                    }}
+                    loading={isFetching || isLoading}
+                    refetch={() => refetch()}
+                />
+            )}
+            {query.listType === "undelivered" && (
+                <CustomerUndeliveredTable
+                    data={tableData}
+                    pagination={{
+                        initialPage: pagination.pageIndex + 1,
+                        total: Math.ceil(totalRow / pagination.pageSize),
+                        onPaginationChange: (page) =>
+                            setPagination((prev) => ({
+                                ...prev,
+                                pageIndex: page - 1,
+                            })),
+                    }}
+                    loading={isFetching || isLoading}
+                    refetch={() => refetch()}
+                />
+            )}
+            {query.listType === "delivered" &&
+                user?.username.toLowerCase() !== "admin" && (
+                    <CustomerDeliveredTable
+                        data={tableData}
+                        pagination={{
+                            initialPage: pagination.pageIndex + 1,
+                            total: Math.ceil(totalRow / pagination.pageSize),
+                            onPaginationChange: (page) =>
+                                setPagination((prev) => ({
+                                    ...prev,
+                                    pageIndex: page - 1,
+                                })),
+                        }}
+                        loading={isFetching || isLoading}
+                        refetch={() => refetch()}
+                    />
+                )}
+            {query.listType === "delete" &&
+                (user?.permission.includes("1048576") ||
+                    user?.permission.includes("7000") ||
+                    user?.permission.includes("7020")) && (
+                    <CustomerDeleteTable
+                        data={tableData}
+                        pagination={{
+                            initialPage: pagination.pageIndex + 1,
+                            total: Math.ceil(totalRow / pagination.pageSize),
+                            onPaginationChange: (page) =>
+                                setPagination((prev) => ({
+                                    ...prev,
+                                    pageIndex: page - 1,
+                                })),
+                        }}
+                        loading={isFetching || isLoading}
+                        refetch={() => refetch()}
+                    />
+                )}
+            {/* Modals */}
             {(user?.permission.includes("1048576") ||
                 user?.permission.includes("7000") ||
                 user?.permission.includes("7060")) && (

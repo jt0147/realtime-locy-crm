@@ -7,49 +7,46 @@ import {
     useState,
 } from "react";
 import {
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-    Spinner,
-    Dropdown,
-    DropdownTrigger,
     Button,
-    DropdownMenu,
+    Dropdown,
     DropdownItem,
-    Selection,
+    DropdownMenu,
+    DropdownTrigger,
     Input,
+    Selection,
+    Spinner,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow,
 } from "@nextui-org/react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
 
 import {
-    chooseCustomer,
-    deleteCustomer,
     deliveryCustomer,
     getEmployeesGroup,
+    returnCustomer,
     undeliveryCustomer,
 } from "@/api";
 import { AutoComplete, Pagination } from "@/components";
 import { colorStatusCustomer, statusCustomer } from "@/constants";
 import { useAuth, useNotification } from "@/contexts";
 import {
-    ChooseCustomerModal,
-    DeleteCustomerModal,
     DeliveryCustomerModal,
+    ReturnCustomerModal,
     UndeliveryCustomerModal,
 } from "@/modals";
 import {
     TAuthContextProps,
-    TChooseCustomerRequest,
     TCustomerDto,
-    TDeleteCustomerRequest,
     TDeliveryCustomerRequest,
     TEmployeeJobDto,
     TNotificationProps,
+    TReturnCustomerRequest,
     TUndeliveryCustomerRequest,
 } from "@/types";
 import { notification } from "@/utilities";
@@ -62,13 +59,13 @@ const columns = [
     { label: "mã", uid: "code" },
     { label: "khách hàng", uid: "customer" },
     { label: "thông tin liên hệ", uid: "information" },
-    { label: "địa chỉ", uid: "address" },
+    { label: "người giao", uid: "assigner" },
+    { label: "thông tin giao việc", uid: "jobDetail" },
     { label: "ghi chú", uid: "note" },
-    { label: "người tạo", uid: "createdAt" },
     { label: "", uid: "actions" },
 ];
 
-const CustomerTable = ({
+const CustomerReceivedTable = ({
     data,
     pagination,
     loading,
@@ -94,16 +91,13 @@ const CustomerTable = ({
         }
     }, [data, selectedKeys]);
 
-    const [isOpenChooseModal, setIsOpenChooseModal] = useState<boolean>(false);
     const [isOpenDeliveryModal, setIsOpenDeliveryModal] =
         useState<boolean>(false);
     const [isOpenUndeliveryModal, setIsOpenUndeliveryModal] =
         useState<boolean>(false);
-    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
-    const [idDelete, setIdDelete] = useState<number | null>(null);
+    const [isOpenReturnModal, setIsOpenReturnModal] = useState<boolean>(false);
 
     const jobAssignmentInfoRef = useRef<HTMLInputElement | null>(null);
-    const deleteRef = useRef<HTMLInputElement | null>(null);
 
     const { user }: TAuthContextProps = useAuth();
     const { connection }: TNotificationProps = useNotification();
@@ -121,17 +115,6 @@ const CustomerTable = ({
             (user?.permission.includes("1048576") ||
                 user?.permission.includes("7000") ||
                 user?.permission.includes("7080")),
-    });
-
-    const chooseMutation = useMutation({
-        mutationFn: chooseCustomer,
-        onSuccess: (data) => {
-            if (data.status) {
-                refetch();
-                // Unselected row
-                setSelectedKeys(new Set([]));
-            }
-        },
     });
 
     const deliveryMutation = useMutation({
@@ -156,54 +139,20 @@ const CustomerTable = ({
         },
     });
 
-    const deleteMutation = useMutation({
-        mutationFn: deleteCustomer,
+    const returnMutation = useMutation({
+        mutationFn: returnCustomer,
         onSuccess: (data) => {
             if (data.status) {
                 refetch();
-                setIdDelete(null);
+                // Unselected row
+                setSelectedKeys(new Set([]));
             }
         },
     });
+
     /**
      * * Handle events
      */
-    const openChooseModal = useCallback(() => {
-        setIsOpenChooseModal(true);
-    }, []);
-
-    const closeChooseModal = useCallback(() => {
-        setIsOpenChooseModal(false);
-    }, []);
-
-    const handleChoose = useCallback(
-        async (selectedIds: number[]) => {
-            const payload: TChooseCustomerRequest = {
-                idUser: user?.id as number,
-                idEmployee: user?.idEmployee as number,
-                idCustomers: selectedIds,
-            };
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const result: any = await chooseMutation.mutateAsync(payload);
-            if (result.status) {
-                // Call api for notification.
-                const jobData = {
-                    senderName: user?.username,
-                    senderFullName: user?.fullNameVI,
-                    receiverName: "admin",
-                    numberJob: payload.idCustomers.length,
-                    idNotification: result.data.idNotification,
-                };
-
-                await connection.invoke("NotifyChooseJob", jobData);
-            }
-
-            closeChooseModal();
-        },
-        [chooseMutation, closeChooseModal, connection, user]
-    );
-
     const openDeliveryModal = useCallback(() => {
         setIsOpenDeliveryModal(true);
     }, []);
@@ -250,20 +199,34 @@ const CustomerTable = ({
         [closeUndeliveryModal, undeliveryMutation]
     );
 
-    const openDeleteModal = useCallback(() => {
-        setIsOpenDeleteModal(true);
+    const openReturnModal = useCallback(() => {
+        setIsOpenReturnModal(true);
     }, []);
 
-    const closeDeleteModal = useCallback(() => {
-        setIsOpenDeleteModal(false);
+    const closeReturnModal = useCallback(() => {
+        setIsOpenReturnModal(false);
     }, []);
 
-    const handleDelete = useCallback(
-        async (data: TDeleteCustomerRequest) => {
-            await deleteMutation.mutateAsync(data);
-            closeDeleteModal();
+    const handleReturn = useCallback(
+        async (payload: TReturnCustomerRequest, receiverName: string) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const result: any = await returnMutation.mutateAsync(payload);
+
+            if (result.status) {
+                // Call api for notification
+                const jobData = {
+                    senderName: user?.username.toLowerCase(),
+                    receiverName,
+                    numberJob: payload.idCustomers.length,
+                    idNotification: result.data.idNotification,
+                };
+
+                await connection.invoke("NotifyReturnJob", jobData);
+            }
+
+            closeReturnModal();
         },
-        [closeDeleteModal, deleteMutation]
+        [closeReturnModal, returnMutation, connection, user]
     );
 
     const renderCell = useCallback(
@@ -329,17 +292,25 @@ const CustomerTable = ({
                             </div>
                         </div>
                     );
-                case "address":
+                case "assigner":
                     return (
                         <div className="w-28 space-y-2">
                             <div
                                 className="text-sm capitalize font-medium"
                                 role="sub-title"
                             >
-                                {item.country}
+                                {item.jobAssigner}
                             </div>
                             <div className="text-xs capitalize">
-                                {item.city}
+                                {item.deliveryDay}
+                            </div>
+                        </div>
+                    );
+                case "jobDetail":
+                    return (
+                        <div className="w-32">
+                            <div className="text-sm capitalize">
+                                {item.jobAssignmentInfo}
                             </div>
                         </div>
                     );
@@ -348,20 +319,6 @@ const CustomerTable = ({
                         <div className="w-32">
                             <div className="text-sm capitalize">
                                 {item.note}
-                            </div>
-                        </div>
-                    );
-                case "createdAt":
-                    return (
-                        <div className="w-32 space-y-2">
-                            <div
-                                className="text-sm capitalize font-medium"
-                                role="sub-title"
-                            >
-                                {item.userCreate}
-                            </div>
-                            <div className="text-xs capitalize">
-                                {item.dateCreate}
                             </div>
                         </div>
                     );
@@ -388,14 +345,6 @@ const CustomerTable = ({
                                         View
                                     </DropdownItem>
                                     <DropdownItem>Edit</DropdownItem>
-                                    <DropdownItem
-                                        onClick={() => {
-                                            setIdDelete(item.id);
-                                            openDeleteModal();
-                                        }}
-                                    >
-                                        Delete
-                                    </DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         </div>
@@ -404,7 +353,7 @@ const CustomerTable = ({
                     return <div>{item[columnKey as keyof TCustomerDto]}</div>;
             }
         },
-        [navigate, openDeleteModal]
+        [navigate]
     );
 
     useEffect(() => {
@@ -432,33 +381,25 @@ const CustomerTable = ({
                             )}
                             {(user?.permission.includes("1048576") ||
                                 user?.permission.includes("7000") ||
-                                user?.permission.includes("7080")) &&
-                                selectedData.every(
-                                    (data) =>
-                                        data.enumDelivery === 1 ||
-                                        data.enumDelivery === 2
-                                ) && (
-                                    <Button
-                                        color="danger"
-                                        onClick={openUndeliveryModal}
-                                    >
-                                        Huỷ giao khách
-                                    </Button>
-                                )}
-                            {user?.username.toLocaleLowerCase() !== "admin" &&
-                                selectedData.every(
-                                    (data) =>
-                                        data.enumDelivery === 0 ||
-                                        data.enumDelivery === 3
-                                ) && (
-                                    <Button
-                                        className="text-white"
-                                        color="success"
-                                        onClick={openChooseModal}
-                                    >
-                                        Nhận khách
-                                    </Button>
-                                )}
+                                user?.permission.includes("7080")) && (
+                                <Button
+                                    color="danger"
+                                    onClick={openUndeliveryModal}
+                                >
+                                    Huỷ giao khách
+                                </Button>
+                            )}
+                            {selectedData.every(
+                                (item) => item.idEmployee === user?.idEmployee
+                            ) && (
+                                <Button
+                                    color="warning"
+                                    className="text-white"
+                                    onClick={openReturnModal}
+                                >
+                                    Trả khách
+                                </Button>
+                            )}
                         </>
                     )}
                 </div>
@@ -520,19 +461,6 @@ const CustomerTable = ({
                     <Pagination {...pagination} />
                 </div>
             </div>
-            {user?.username.toLowerCase() !== "admin" && (
-                <ChooseCustomerModal
-                    isOpen={isOpenChooseModal}
-                    onClose={closeChooseModal}
-                    onSubmit={async () => {
-                        const selectedIds: number[] = selectedData.map(
-                            (item) => item.id
-                        );
-                        await handleChoose(selectedIds);
-                    }}
-                    loading={chooseMutation.isLoading}
-                />
-            )}
             {(user?.permission.includes("1048576") ||
                 user?.permission.includes("7000") ||
                 user?.permission.includes("7080")) && (
@@ -601,27 +529,26 @@ const CustomerTable = ({
                     loading={undeliveryMutation.isLoading}
                 />
             )}
-            {(user?.permission.includes("1048576") ||
-                user?.permission.includes("7000") ||
-                user?.permission.includes("7020")) && (
-                <DeleteCustomerModal
-                    isOpen={isOpenDeleteModal}
-                    onClose={closeDeleteModal}
+            {user?.username.toLowerCase() !== "admin" && (
+                <ReturnCustomerModal
+                    isOpen={isOpenReturnModal}
+                    onClose={closeReturnModal}
                     onSubmit={async () => {
-                        await handleDelete({
-                            id: idDelete as number,
-                            flagDel: true,
-                            idUserDelete: user?.id as number,
-                            reasonForDelete: deleteRef.current?.value ?? "",
-                        });
+                        const selectedIds: number[] = selectedData.map(
+                            (item) => item.id
+                        );
+                        await handleReturn(
+                            {
+                                idCustomers: selectedIds,
+                                idUser: user?.id as number,
+                            },
+                            "admin"
+                        );
                     }}
-                    loading={deleteMutation.isLoading}
-                >
-                    <Input label="Lý do xoá" ref={deleteRef} />
-                </DeleteCustomerModal>
+                />
             )}
         </Fragment>
     );
 };
 
-export default CustomerTable;
+export default CustomerReceivedTable;

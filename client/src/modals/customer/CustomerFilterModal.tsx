@@ -92,7 +92,7 @@ const CustomerFilterModal = ({
     const [portsImExFrom, setPortsImExFrom] = useState<TPortDto[] | []>([]);
     const [portsImExTo, setPortsImExTo] = useState<TPortDto[] | []>([]);
 
-    // Thành phố
+    // Quốc gia
     const { data: countriesRes } = useQuery({
         queryKey: "countries",
         queryFn: getAllCountries,

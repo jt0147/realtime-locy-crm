@@ -6,6 +6,7 @@ import {
     TDeleteCustomerRequest,
     TDeliveryCustomerRequest,
     TDenyCustomerRequest,
+    TReturnCustomerRequest,
     TUndeliveryCustomerRequest,
     TUpdateCustomerRequest,
 } from "@/types";
@@ -88,4 +89,8 @@ export const acceptCustomer = (payload: TAcceptCustomerRequest) => {
 
 export const denyCustomer = (payload: TDenyCustomerRequest) => {
     return privateInstance.put("/customer/deny", payload);
+};
+
+export const returnCustomer = (payload: TReturnCustomerRequest) => {
+    return privateInstance.put("/customer/return", payload);
 };

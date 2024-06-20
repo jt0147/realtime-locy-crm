@@ -26,31 +26,18 @@ import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
 
-import {
-    chooseCustomer,
-    deleteCustomer,
-    deliveryCustomer,
-    getEmployeesGroup,
-    undeliveryCustomer,
-} from "@/api";
+import { chooseCustomer, deliveryCustomer, getEmployeesGroup } from "@/api";
 import { AutoComplete, Pagination } from "@/components";
 import { colorStatusCustomer, statusCustomer } from "@/constants";
 import { useAuth, useNotification } from "@/contexts";
-import {
-    ChooseCustomerModal,
-    DeleteCustomerModal,
-    DeliveryCustomerModal,
-    UndeliveryCustomerModal,
-} from "@/modals";
+import { ChooseCustomerModal, DeliveryCustomerModal } from "@/modals";
 import {
     TAuthContextProps,
     TChooseCustomerRequest,
     TCustomerDto,
-    TDeleteCustomerRequest,
     TDeliveryCustomerRequest,
     TEmployeeJobDto,
     TNotificationProps,
-    TUndeliveryCustomerRequest,
 } from "@/types";
 import { notification } from "@/utilities";
 
@@ -58,7 +45,6 @@ import { TCustomerTableProps } from "./types";
 
 const columns = [
     { label: "trạng thái", uid: "enumDelivery" },
-    { label: "nhân viên", uid: "employee" },
     { label: "mã", uid: "code" },
     { label: "khách hàng", uid: "customer" },
     { label: "thông tin liên hệ", uid: "information" },
@@ -68,7 +54,7 @@ const columns = [
     { label: "", uid: "actions" },
 ];
 
-const CustomerTable = ({
+const CustomerUndeliveredTable = ({
     data,
     pagination,
     loading,
@@ -97,13 +83,8 @@ const CustomerTable = ({
     const [isOpenChooseModal, setIsOpenChooseModal] = useState<boolean>(false);
     const [isOpenDeliveryModal, setIsOpenDeliveryModal] =
         useState<boolean>(false);
-    const [isOpenUndeliveryModal, setIsOpenUndeliveryModal] =
-        useState<boolean>(false);
-    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
-    const [idDelete, setIdDelete] = useState<number | null>(null);
 
     const jobAssignmentInfoRef = useRef<HTMLInputElement | null>(null);
-    const deleteRef = useRef<HTMLInputElement | null>(null);
 
     const { user }: TAuthContextProps = useAuth();
     const { connection }: TNotificationProps = useNotification();
@@ -145,26 +126,6 @@ const CustomerTable = ({
         },
     });
 
-    const undeliveryMutation = useMutation({
-        mutationFn: undeliveryCustomer,
-        onSuccess: (data) => {
-            if (data.status) {
-                refetch();
-                // Unselected row
-                setSelectedKeys(new Set([]));
-            }
-        },
-    });
-
-    const deleteMutation = useMutation({
-        mutationFn: deleteCustomer,
-        onSuccess: (data) => {
-            if (data.status) {
-                refetch();
-                setIdDelete(null);
-            }
-        },
-    });
     /**
      * * Handle events
      */
@@ -234,38 +195,6 @@ const CustomerTable = ({
         [closeDeliveryModal, deliveryMutation, connection, user]
     );
 
-    const openUndeliveryModal = useCallback(() => {
-        setIsOpenUndeliveryModal(true);
-    }, []);
-
-    const closeUndeliveryModal = useCallback(() => {
-        setIsOpenUndeliveryModal(false);
-    }, []);
-
-    const handleUndelivery = useCallback(
-        async (data: TUndeliveryCustomerRequest) => {
-            await undeliveryMutation.mutateAsync(data);
-            closeUndeliveryModal();
-        },
-        [closeUndeliveryModal, undeliveryMutation]
-    );
-
-    const openDeleteModal = useCallback(() => {
-        setIsOpenDeleteModal(true);
-    }, []);
-
-    const closeDeleteModal = useCallback(() => {
-        setIsOpenDeleteModal(false);
-    }, []);
-
-    const handleDelete = useCallback(
-        async (data: TDeleteCustomerRequest) => {
-            await deleteMutation.mutateAsync(data);
-            closeDeleteModal();
-        },
-        [closeDeleteModal, deleteMutation]
-    );
-
     const renderCell = useCallback(
         (item: TCustomerDto, columnKey: string | number) => {
             switch (columnKey) {
@@ -277,14 +206,6 @@ const CustomerTable = ({
                             }`}
                         >
                             {statusCustomer[item.enumDelivery]}
-                        </div>
-                    );
-                case "employee":
-                    return (
-                        <div className={`w-32`}>
-                            <div className="text-sm font-medium capitalize text-gray-950">
-                                {item.employee}
-                            </div>
                         </div>
                     );
                 case "code":
@@ -387,15 +308,6 @@ const CustomerTable = ({
                                     >
                                         View
                                     </DropdownItem>
-                                    <DropdownItem>Edit</DropdownItem>
-                                    <DropdownItem
-                                        onClick={() => {
-                                            setIdDelete(item.id);
-                                            openDeleteModal();
-                                        }}
-                                    >
-                                        Delete
-                                    </DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         </div>
@@ -404,7 +316,7 @@ const CustomerTable = ({
                     return <div>{item[columnKey as keyof TCustomerDto]}</div>;
             }
         },
-        [navigate, openDeleteModal]
+        [navigate]
     );
 
     useEffect(() => {
@@ -430,21 +342,6 @@ const CustomerTable = ({
                                     Giao khách
                                 </Button>
                             )}
-                            {(user?.permission.includes("1048576") ||
-                                user?.permission.includes("7000") ||
-                                user?.permission.includes("7080")) &&
-                                selectedData.every(
-                                    (data) =>
-                                        data.enumDelivery === 1 ||
-                                        data.enumDelivery === 2
-                                ) && (
-                                    <Button
-                                        color="danger"
-                                        onClick={openUndeliveryModal}
-                                    >
-                                        Huỷ giao khách
-                                    </Button>
-                                )}
                             {user?.username.toLocaleLowerCase() !== "admin" &&
                                 selectedData.every(
                                     (data) =>
@@ -586,42 +483,8 @@ const CustomerTable = ({
                     />
                 </DeliveryCustomerModal>
             )}
-            {(user?.permission.includes("1048576") ||
-                user?.permission.includes("7000") ||
-                user?.permission.includes("7080")) && (
-                <UndeliveryCustomerModal
-                    isOpen={isOpenUndeliveryModal}
-                    onClose={closeUndeliveryModal}
-                    onSubmit={async () => {
-                        const selectedIds: number[] = selectedData.map(
-                            (item) => item.id
-                        );
-                        await handleUndelivery({ idCustomers: selectedIds });
-                    }}
-                    loading={undeliveryMutation.isLoading}
-                />
-            )}
-            {(user?.permission.includes("1048576") ||
-                user?.permission.includes("7000") ||
-                user?.permission.includes("7020")) && (
-                <DeleteCustomerModal
-                    isOpen={isOpenDeleteModal}
-                    onClose={closeDeleteModal}
-                    onSubmit={async () => {
-                        await handleDelete({
-                            id: idDelete as number,
-                            flagDel: true,
-                            idUserDelete: user?.id as number,
-                            reasonForDelete: deleteRef.current?.value ?? "",
-                        });
-                    }}
-                    loading={deleteMutation.isLoading}
-                >
-                    <Input label="Lý do xoá" ref={deleteRef} />
-                </DeleteCustomerModal>
-            )}
         </Fragment>
     );
 };
 
-export default CustomerTable;
+export default CustomerUndeliveredTable;

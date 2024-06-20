@@ -61,6 +61,20 @@ const NotificationProvider = ({ children }: TProviderProps) => {
                                 notification(true, payload.message);
                             }
                         });
+
+                        connection.on("JobReturned", function (payload) {
+                            console.log(payload);
+                            if (user.id !== payload.data.idNguoiGui) {
+                                notification(true, payload.message);
+                            }
+                        });
+
+                        connection.on("JobDenied", function (payload) {
+                            console.log(payload);
+                            if (user.id !== payload.data.idNguoiGui) {
+                                notification(true, payload.message);
+                            }
+                        });
                     }
 
                     console.log("Connected to SignalR");

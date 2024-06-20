@@ -1,6 +1,12 @@
+export { default as AcceptCustomerModal } from "./AcceptCustomerModal";
 export { default as ChooseCustomerModal } from "./ChooseCustomerModal";
 export { default as CustomerFilterModal } from "./CustomerFilterModal";
+export { default as DeleteCustomerModal } from "./DeleteCustomerModal";
 export { default as DeliveryCustomerModal } from "./DeliveryCustomerModal";
+export { default as DenyCustomerModal } from "./DenyCustomerModal";
 export { default as ExportCustomerModal } from "./ExportCustomerModal";
 export { default as ExportCustomerReceiveModal } from "./ExportCustomerReceiveModal";
+export { default as RemoveCustomerModal } from "./RemoveCustomerModal";
+export { default as ReturnCustomerModal } from "./ReturnCustomerModal";
+export { default as UndeleteCustomerModal } from "./UndeleteCustomerModal";
 export { default as UndeliveryCustomerModal } from "./UndeliveryCustomerModal";
