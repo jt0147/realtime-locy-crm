@@ -32,6 +32,7 @@ import {
     deliveryCustomer,
     getEmployeesGroup,
     undeliveryCustomer,
+    updateCustomer,
 } from "@/api";
 import { AutoComplete, Pagination } from "@/components";
 import { colorStatusCustomer, statusCustomer } from "@/constants";
@@ -41,6 +42,7 @@ import {
     DeleteCustomerModal,
     DeliveryCustomerModal,
     UndeliveryCustomerModal,
+    UpdateCustomerModal,
 } from "@/modals";
 import {
     TAuthContextProps,
@@ -51,6 +53,7 @@ import {
     TEmployeeJobDto,
     TNotificationProps,
     TUndeliveryCustomerRequest,
+    TUpdateCustomerRequest,
 } from "@/types";
 import { notification } from "@/utilities";
 
@@ -73,6 +76,7 @@ const CustomerTable = ({
     pagination,
     loading,
     refetch,
+    page,
 }: TCustomerTableProps) => {
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
     const [employees, setEmployees] = useState<TEmployeeJobDto[] | []>([]);
@@ -99,7 +103,10 @@ const CustomerTable = ({
         useState<boolean>(false);
     const [isOpenUndeliveryModal, setIsOpenUndeliveryModal] =
         useState<boolean>(false);
+    const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
+    const [updateSelected, setUpdateSelected] =
+        useState<TUpdateCustomerRequest | null>(null);
     const [idDelete, setIdDelete] = useState<number | null>(null);
 
     const jobAssignmentInfoRef = useRef<HTMLInputElement | null>(null);
@@ -152,6 +159,16 @@ const CustomerTable = ({
                 refetch();
                 // Unselected row
                 setSelectedKeys(new Set([]));
+            }
+        },
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: updateCustomer,
+        onSuccess: (data) => {
+            if (data.status) {
+                refetch();
+                setUpdateSelected(null);
             }
         },
     });
@@ -250,6 +267,22 @@ const CustomerTable = ({
         [closeUndeliveryModal, undeliveryMutation]
     );
 
+    const openUpdateModal = useCallback(() => {
+        setIsOpenUpdateModal(true);
+    }, []);
+
+    const closeUpdateModal = useCallback(() => {
+        setIsOpenUpdateModal(false);
+    }, []);
+
+    const handleUpdate = useCallback(
+        async (data: TUpdateCustomerRequest) => {
+            await updateMutation.mutateAsync(data);
+            closeUpdateModal();
+        },
+        [closeUpdateModal, updateMutation]
+    );
+
     const openDeleteModal = useCallback(() => {
         setIsOpenDeleteModal(true);
     }, []);
@@ -312,6 +345,9 @@ const CustomerTable = ({
                             </div>
                             <div className="text-xs first-letter:uppercase">
                                 {item.addressVI}
+                            </div>
+                            <div className="text-xs first-letter:uppercase">
+                                {item.typeOfBusiness}
                             </div>
                         </div>
                     );
@@ -387,7 +423,31 @@ const CustomerTable = ({
                                     >
                                         View
                                     </DropdownItem>
-                                    <DropdownItem>Edit</DropdownItem>
+                                    <DropdownItem
+                                        onClick={() => {
+                                            setUpdateSelected({
+                                                id: item.id,
+                                                idCountry: item.idCountry,
+                                                idCity: item.idCity,
+                                                idTypeOfBusiness:
+                                                    item.idTypeOfBusiness,
+                                                code: item.code,
+                                                taxCode: item.taxCode,
+                                                nameVI: item.nameVI,
+                                                nameEN: item.nameEN,
+                                                addressVI: item.addressVI,
+                                                addressEN: item.addressEN,
+                                                phone: item.phone,
+                                                fax: item.fax,
+                                                email: item.email,
+                                                website: item.website,
+                                                note: item.note,
+                                            });
+                                            openUpdateModal();
+                                        }}
+                                    >
+                                        Edit
+                                    </DropdownItem>
                                     <DropdownItem
                                         onClick={() => {
                                             setIdDelete(item.id);
@@ -404,7 +464,7 @@ const CustomerTable = ({
                     return <div>{item[columnKey as keyof TCustomerDto]}</div>;
             }
         },
-        [navigate, openDeleteModal]
+        [navigate, openDeleteModal, openUpdateModal]
     );
 
     useEffect(() => {
@@ -516,7 +576,12 @@ const CustomerTable = ({
                     </TableBody>
                 </Table>
                 {/* Bottom table */}
-                <div className="p-4 flex justify-end">
+                <div className="p-4 flex justify-between gap-4">
+                    <div className="text-sm">
+                        {`${page.pageIndex * page.pageSize + 1} - ${
+                            page.pageIndex * page.pageSize + data.length
+                        } of ${page.totalRow}`}
+                    </div>
                     <Pagination {...pagination} />
                 </div>
             </div>
@@ -599,6 +664,19 @@ const CustomerTable = ({
                         await handleUndelivery({ idCustomers: selectedIds });
                     }}
                     loading={undeliveryMutation.isLoading}
+                />
+            )}
+            {(user?.permission.includes("1048576") ||
+                user?.permission.includes("7000") ||
+                user?.permission.includes("7020")) && (
+                <UpdateCustomerModal
+                    isOpen={isOpenUpdateModal}
+                    onClose={closeUpdateModal}
+                    onSubmit={async (item) => {
+                        await handleUpdate(item);
+                    }}
+                    loading={updateMutation.isLoading}
+                    item={updateSelected}
                 />
             )}
             {(user?.permission.includes("1048576") ||

@@ -18,3 +18,8 @@ export type TModalProps = {
     size?: TSizeModal;
     loading?: boolean;
 };
+
+export type TUpdateModalProps<T> = Omit<TModalProps, "onSubmit"> & {
+    item: T | null;
+    onSubmit: (item: T) => void | Promise<void>;
+};

@@ -48,6 +48,7 @@ const CustomerAssignedTable = ({
     pagination,
     loading,
     refetch,
+    page,
 }: TCustomerTableProps) => {
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
 
@@ -148,6 +149,9 @@ const CustomerAssignedTable = ({
                             </div>
                             <div className="text-xs first-letter:uppercase">
                                 {item.addressVI}
+                            </div>
+                            <div className="text-xs first-letter:uppercase">
+                                {item.typeOfBusiness}
                             </div>
                         </div>
                     );
@@ -307,7 +311,12 @@ const CustomerAssignedTable = ({
                     </TableBody>
                 </Table>
                 {/* Bottom table */}
-                <div className="p-4 flex justify-end">
+                <div className="p-4 flex justify-between gap-4">
+                    <div className="text-sm">
+                        {`${page.pageIndex * page.pageSize + 1} - ${
+                            page.pageIndex * page.pageSize + data.length
+                        } of ${page.totalRow}`}
+                    </div>
                     <Pagination {...pagination} />
                 </div>
             </div>

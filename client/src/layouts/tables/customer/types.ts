@@ -6,6 +6,11 @@ export type TCustomerTableProps = {
     refetch: () => void;
 
     // Pagination
+    page: {
+        pageIndex: number;
+        pageSize: number;
+        totalRow: number;
+    };
     pagination: {
         loop?: boolean;
         showControls?: boolean;

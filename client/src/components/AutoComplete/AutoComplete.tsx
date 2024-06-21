@@ -18,8 +18,10 @@ const AutoComplete = <T extends Record<string, any>>({
     useEffect(() => {
         if (!props.value) {
             setValue("");
+        } else {
+            setValue(props.value as string);
         }
-    }, [props.value]);
+    }, [props.value, value]);
 
     return (
         <AutoCompleteNext
@@ -27,7 +29,7 @@ const AutoComplete = <T extends Record<string, any>>({
             label={label}
             selectedKey={value}
             onSelectionChange={(key) => {
-                props.onSelectionChange?.(key);
+                props.onSelectionChange?.(typeof key === "object" ? "" : key);
                 setValue(key as string);
             }}
         >

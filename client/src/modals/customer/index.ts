@@ -10,3 +10,4 @@ export { default as RemoveCustomerModal } from "./RemoveCustomerModal";
 export { default as ReturnCustomerModal } from "./ReturnCustomerModal";
 export { default as UndeleteCustomerModal } from "./UndeleteCustomerModal";
 export { default as UndeliveryCustomerModal } from "./UndeliveryCustomerModal";
+export { default as UpdateCustomerModal } from "./UpdateCustomerModal";

@@ -383,15 +383,19 @@ const Customer = () => {
                                 option={{ label: "label", key: "value" }}
                                 disallowEmptySelection
                                 value={query.listType}
-                                onChange={(e) =>
+                                onChange={(e) => {
                                     setQuery((prev) => ({
                                         ...prev,
                                         listType:
                                             e.target.value !== ""
                                                 ? (e.target.value as TListType)
                                                 : "all",
-                                    }))
-                                }
+                                    }));
+                                    setPagination((prev) => ({
+                                        ...prev,
+                                        pageIndex: 0,
+                                    }));
+                                }}
                             />
                         </div>
                     </div>
@@ -433,6 +437,7 @@ const Customer = () => {
                     }}
                     loading={isFetching || isLoading}
                     refetch={() => refetch()}
+                    page={{ ...pagination, totalRow }}
                 />
             )}
             {query.listType === "assigned" &&
@@ -452,6 +457,7 @@ const Customer = () => {
                         }}
                         loading={isFetching || isLoading}
                         refetch={() => refetch()}
+                        page={{ ...pagination, totalRow }}
                     />
                 )}
             {query.listType === "received" && (
@@ -468,6 +474,7 @@ const Customer = () => {
                     }}
                     loading={isFetching || isLoading}
                     refetch={() => refetch()}
+                    page={{ ...pagination, totalRow }}
                 />
             )}
             {query.listType === "undelivered" && (
@@ -484,6 +491,7 @@ const Customer = () => {
                     }}
                     loading={isFetching || isLoading}
                     refetch={() => refetch()}
+                    page={{ ...pagination, totalRow }}
                 />
             )}
             {query.listType === "delivered" &&
@@ -501,6 +509,7 @@ const Customer = () => {
                         }}
                         loading={isFetching || isLoading}
                         refetch={() => refetch()}
+                        page={{ ...pagination, totalRow }}
                     />
                 )}
             {query.listType === "delete" &&
@@ -520,6 +529,7 @@ const Customer = () => {
                         }}
                         loading={isFetching || isLoading}
                         refetch={() => refetch()}
+                        page={{ ...pagination, totalRow }}
                     />
                 )}
             {/* Modals */}
