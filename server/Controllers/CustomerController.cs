@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
 using VslCrmApiRealTime.Exceptions;
 using VslCrmApiRealTime.Interfaces;
 using VslCrmApiRealTime.Models.Queries;
@@ -22,13 +23,15 @@ namespace VslCrmApiRealTime.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly ICustomerJobService _customerJobService;
         private readonly INotificationService _notificationService;
+        private readonly ILogger<CustomerController> _logger;
 
-        public CustomerController(ICustomerService customerService, IEmployeeService employeeService, ICustomerJobService customerJobService, INotificationService notificationService)
+        public CustomerController(ICustomerService customerService, IEmployeeService employeeService, ICustomerJobService customerJobService, INotificationService notificationService, ILogger<CustomerController> logger)
         {
             _customerService = customerService;
             _employeeService = employeeService;
             _customerJobService = customerJobService;
             _notificationService = notificationService;
+            _logger = logger;
         }
 
         /**
@@ -295,6 +298,7 @@ namespace VslCrmApiRealTime.Controllers
                 {
                     throw new ErrorException((int)HttpStatusCode.MethodNotAllowed, "Method not allowed", "Bạn không thể nhận khách hàng vì quá số lượng khách hàng bạn quản lý!");
                 }
+
                 var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
 
                 if (data == null)
@@ -304,7 +308,7 @@ namespace VslCrmApiRealTime.Controllers
 
                 await _customerJobService.ChooseCustomers(data, req);
 
-                var notification = await _notificationService.Create(7, req.IDUser, null);
+                var notification = await _notificationService.Create(7, req.IDUser);
 
                 var response = new Response()
                 {
@@ -359,7 +363,10 @@ namespace VslCrmApiRealTime.Controllers
 
                 await _customerJobService.DeliveryCustomers(data, req);
 
-                var notification = await _notificationService.Create(6, idUser, req.IDAccountEmployee);
+                var accountAssign = await _employeeService.GetAccountById(req.IDUserAssign);
+                var objNoti = accountAssign?.UserName?.ToLower() != "admin" ? "admin" : null;
+
+                var notification = await _notificationService.Create(6, idUser, req.IDAccountEmployee, objNoti);
 
                 var response = new Response()
                 {
@@ -440,7 +447,8 @@ namespace VslCrmApiRealTime.Controllers
             try
             {
                 var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
-
+                var objNoti = "";
+               
                 if (data == null)
                 {
                     throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi nhận khách hàng trên hệ thống!");
@@ -451,9 +459,21 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.BadRequest, "Bad request", "Lỗi nhận khách hàng trên hệ thống!");
                 }
 
+                foreach (var item in data)
+                {
+                    if (item.IduserGiaoViecNavigation?.UserName?.ToLower() != "admin")
+                    {
+                        _logger.LogError(JsonSerializer.Serialize(item));
+                        objNoti = item.IduserGiaoViecNavigation?.UserName?.ToLower();
+                        break;
+                    }
+                }
+
+                _logger.LogError(objNoti);
+
                 await _customerJobService.AcceptCustomers(data, req);
 
-                var notification = await _notificationService.Create(7, req.IDUser, null);
+                var notification = await _notificationService.Create(7, req.IDUser, null, objNoti);
 
                 var response = new Response()
                 {
@@ -492,15 +512,25 @@ namespace VslCrmApiRealTime.Controllers
             try
             {
                 var data = await _customerJobService.GetCustomersByIdArray(req.IdCustomers);
+                var objNoti = "";
 
                 if (data == null)
                 {
                     throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi trả khách hàng về kho trên hệ thống!");
                 }
 
+                foreach (var item in data)
+                {
+                    if (item.IduserGiaoViecNavigation?.UserName?.ToLower() != "admin")
+                    {
+                        objNoti = item.IduserGiaoViecNavigation?.UserName?.ToLower();
+                        break;
+                    }
+                }
+
                 await _customerJobService.ReturnCustomers(data, req);
 
-                var notification = await _notificationService.Create(8, req.IDUser, null);
+                var notification = await _notificationService.Create(8, req.IDUser, null, objNoti);
 
                 var response = new Response()
                 {
@@ -539,6 +569,7 @@ namespace VslCrmApiRealTime.Controllers
             try
             {
                 var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
+                var objNoti = "";
 
                 if (data == null)
                 {
@@ -550,9 +581,18 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.BadRequest, "Bad request", "Lỗi từ chối khách hàng trên hệ thống!");
                 }
 
+                foreach (var item in data)
+                {
+                    if (item.IduserGiaoViecNavigation?.UserName?.ToLower() != "admin")
+                    {
+                        objNoti = item.IduserGiaoViecNavigation?.UserName?.ToLower();
+                        break;
+                    }
+                }
+
                 await _customerJobService.DenyCustomers(data, req);
 
-                var notification = await _notificationService.Create(9, req.IDUser, null);
+                var notification = await _notificationService.Create(9, req.IDUser, null, objNoti);
 
                 var response = new Response()
                 {

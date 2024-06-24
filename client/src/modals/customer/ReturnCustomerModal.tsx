@@ -47,7 +47,7 @@ const ReturnCustomerModal = ({
                                 isLoading={loading}
                                 disabled={loading}
                             >
-                                {loading ? "Đang huỷ..." : "Huỷ giao"}
+                                {loading ? "Đang trả..." : "Trả khách"}
                             </Button>
                         </ModalFooter>
                     </>

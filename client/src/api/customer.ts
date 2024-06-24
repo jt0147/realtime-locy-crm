@@ -1,14 +1,29 @@
 import { privateInstance } from "@/configs";
 import {
     TAcceptCustomerRequest,
+    TApiGetWithPageProps,
     TChooseCustomerRequest,
+    TCreateCustomerClassifyRequest,
+    TCreateCustomerContactRequest,
+    TCreateCustomerEvaluateRequest,
+    TCreateCustomerImExRequest,
+    TCreateCustomerMajorRequest,
+    TCreateCustomerOperationalRequest,
     TCreateCustomerRequest,
+    TCreateCustomerRouteRequest,
     TDeleteCustomerRequest,
     TDeliveryCustomerRequest,
     TDenyCustomerRequest,
     TReturnCustomerRequest,
     TUndeliveryCustomerRequest,
+    TUpdateCustomerClassifyRequest,
+    TUpdateCustomerContactRequest,
+    TUpdateCustomerEvaluateRequest,
+    TUpdateCustomerImExRequest,
+    TUpdateCustomerMajorRequest,
+    TUpdateCustomerOperationalRequest,
     TUpdateCustomerRequest,
+    TUpdateCustomerRouteRequest,
 } from "@/types";
 
 type TGetParams = {
@@ -93,4 +108,241 @@ export const denyCustomer = (payload: TDenyCustomerRequest) => {
 
 export const returnCustomer = (payload: TReturnCustomerRequest) => {
     return privateInstance.put("/customer/return", payload);
+};
+
+// Information
+// Detail
+export const getCustomerById = (id: number) => {
+    return privateInstance.get(`/customerinfo/${id}`);
+};
+
+// List ImEx of customer id
+export const getCustomerImExs = async ({
+    start,
+    size,
+    search,
+    idCustomer,
+}: TApiGetWithPageProps & { idCustomer: number }) => {
+    return privateInstance.get(`/customerinfo/imex/${idCustomer}`, {
+        params: {
+            start,
+            size,
+            search,
+        },
+    });
+};
+
+export const createCustomerImEx = async (
+    payload: TCreateCustomerImExRequest
+) => {
+    return privateInstance.post("/customerinfo/imex", payload);
+};
+
+export const updateCustomerImEx = async (
+    payload: TUpdateCustomerImExRequest
+) => {
+    return privateInstance.put(`/customerinfo/imex/${payload.id}`, payload);
+};
+
+export const deleteCustomerImEx = async (id: number) => {
+    return privateInstance.delete(`/customerinfo/imex/${id}`);
+};
+
+// List Operational of customer id
+export const getCustomerOperationals = async ({
+    start,
+    size,
+    search,
+    idCustomer,
+}: TApiGetWithPageProps & { idCustomer: number }) => {
+    return privateInstance.get(`/customerinfo/operational/${idCustomer}`, {
+        params: {
+            start,
+            size,
+            search,
+        },
+    });
+};
+
+export const createCustomerOperational = async (
+    payload: TCreateCustomerOperationalRequest
+) => {
+    return privateInstance.post("/customerinfo/operational", payload);
+};
+
+export const updateCustomerOperational = async (
+    payload: TUpdateCustomerOperationalRequest
+) => {
+    return privateInstance.put(
+        `/customerinfo/operational/${payload.id}`,
+        payload
+    );
+};
+
+export const deleteCustomerOperational = async (id: number) => {
+    return privateInstance.delete(`/customerinfo/operational/${id}`);
+};
+
+// List Contact of customer id
+export const getAllCustomerContacts = async (idCustomer: number) => {
+    return privateInstance.get(`/customerinfo/contact/${idCustomer}/all`);
+};
+
+export const getCustomerContacts = async ({
+    start,
+    size,
+    search,
+    idCustomer,
+}: TApiGetWithPageProps & { idCustomer: number }) => {
+    return privateInstance.get(`/customerinfo/contact/${idCustomer}`, {
+        params: {
+            start,
+            size,
+            search,
+        },
+    });
+};
+
+export const createCustomerContact = async (
+    payload: TCreateCustomerContactRequest
+) => {
+    return privateInstance.post("/customerinfo/contact", payload);
+};
+
+export const updateCustomerContact = async (
+    payload: TUpdateCustomerContactRequest
+) => {
+    return privateInstance.put(`/customerinfo/contact/${payload.id}`, payload);
+};
+
+export const deleteCustomerContact = async (id: number) => {
+    return privateInstance.delete(`/customerinfo/contact/${id}`);
+};
+
+// List Evaluate of customer id
+export const getCustomerEvaluates = async ({
+    start,
+    size,
+    search,
+    idCustomer,
+}: TApiGetWithPageProps & { idCustomer: number }) => {
+    return privateInstance.get(`/customerinfo/evaluate/${idCustomer}`, {
+        params: {
+            start,
+            size,
+            search,
+        },
+    });
+};
+
+export const createCustomerEvaluate = async (
+    payload: TCreateCustomerEvaluateRequest
+) => {
+    return privateInstance.post("/customerinfo/evaluate", payload);
+};
+
+export const updateCustomerEvaluate = async (
+    payload: TUpdateCustomerEvaluateRequest
+) => {
+    return privateInstance.put(`/customerinfo/evaluate/${payload.id}`, payload);
+};
+
+export const deleteCustomerEvaluate = async (id: number) => {
+    return privateInstance.delete(`/customerinfo/evaluate/${id}`);
+};
+
+// List Classify of customer id
+export const getCustomerClassifies = async ({
+    start,
+    size,
+    search,
+    idCustomer,
+}: TApiGetWithPageProps & { idCustomer: number }) => {
+    return privateInstance.get(`/customerinfo/classify/${idCustomer}`, {
+        params: {
+            start,
+            size,
+            search,
+        },
+    });
+};
+
+export const createCustomerClassify = async (
+    payload: TCreateCustomerClassifyRequest
+) => {
+    return privateInstance.post("/customerinfo/classify", payload);
+};
+
+export const updateCustomerClassify = async (
+    payload: TUpdateCustomerClassifyRequest
+) => {
+    return privateInstance.put(`/customerinfo/classify/${payload.id}`, payload);
+};
+
+export const deleteCustomerClassify = async (id: number) => {
+    return privateInstance.delete(`/customerinfo/classify/${id}`);
+};
+
+// List Major of customer id
+export const getCustomerMajors = async ({
+    start,
+    size,
+    search,
+    idCustomer,
+}: TApiGetWithPageProps & { idCustomer: number }) => {
+    return privateInstance.get(`/customerinfo/major/${idCustomer}`, {
+        params: {
+            start,
+            size,
+            search,
+        },
+    });
+};
+
+export const createCustomerMajor = async (
+    payload: TCreateCustomerMajorRequest
+) => {
+    return privateInstance.post("/customerinfo/major", payload);
+};
+
+export const updateCustomerMajor = async (
+    payload: TUpdateCustomerMajorRequest
+) => {
+    return privateInstance.put(`/customerinfo/major/${payload.id}`, payload);
+};
+
+export const deleteCustomerMajor = async (id: number) => {
+    return privateInstance.delete(`/customerinfo/major/${id}`);
+};
+
+// List Route of customer id
+export const getCustomerRoutes = async ({
+    start,
+    size,
+    search,
+    idCustomer,
+}: TApiGetWithPageProps & { idCustomer: number }) => {
+    return privateInstance.get(`/customerinfo/route/${idCustomer}`, {
+        params: {
+            start,
+            size,
+            search,
+        },
+    });
+};
+
+export const createCustomerRoute = async (
+    payload: TCreateCustomerRouteRequest
+) => {
+    return privateInstance.post("/customerinfo/route", payload);
+};
+
+export const updateCustomerRoute = async (
+    payload: TUpdateCustomerRouteRequest
+) => {
+    return privateInstance.put(`/customerinfo/route/${payload.id}`, payload);
+};
+
+export const deleteCustomerRoute = async (id: number) => {
+    return privateInstance.delete(`/customerinfo/route/${id}`);
 };

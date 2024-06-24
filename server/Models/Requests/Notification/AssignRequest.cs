@@ -3,7 +3,9 @@
     public class AssignRequest
     {
         public required string SenderName { get; set; }
+        public required string SenderFullName { get; set; }
         public required string ReceiverName { get; set; }
+        public required string ReceiverFullName { get; set; }
         public int NumberJob { get; set; }
         public required long IDNotification { get; set; }
     }

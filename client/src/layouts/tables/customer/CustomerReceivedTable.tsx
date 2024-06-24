@@ -163,7 +163,11 @@ const CustomerReceivedTable = ({
     }, []);
 
     const handleDelivery = useCallback(
-        async (payload: TDeliveryCustomerRequest, receiverName: string) => {
+        async (
+            payload: TDeliveryCustomerRequest,
+            receiverName: string,
+            receiverFullName: string
+        ) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const result: any = await deliveryMutation.mutateAsync(payload);
 
@@ -171,7 +175,9 @@ const CustomerReceivedTable = ({
                 // Call api for notification
                 const jobData = {
                     senderName: user?.username.toLowerCase(),
+                    senderFullName: user?.fullNameVI ?? "",
                     receiverName,
+                    receiverFullName,
                     numberJob: payload.idCustomers.length,
                     idNotification: result.data.idNotification,
                 };
@@ -217,6 +223,7 @@ const CustomerReceivedTable = ({
                 // Call api for notification
                 const jobData = {
                     senderName: user?.username.toLowerCase(),
+                    senderFullName: user?.fullNameVI.toLowerCase(),
                     receiverName,
                     numberJob: payload.idCustomers.length,
                     idNotification: result.data.idNotification,
@@ -500,7 +507,8 @@ const CustomerReceivedTable = ({
 
                         await handleDelivery(
                             payload,
-                            employeeSelected.username
+                            employeeSelected.username,
+                            employeeSelected.fullNameVI
                         );
                     }}
                     loading={deliveryMutation.isLoading}
@@ -554,6 +562,7 @@ const CustomerReceivedTable = ({
                             "admin"
                         );
                     }}
+                    loading={returnMutation.isLoading}
                 />
             )}
         </Fragment>

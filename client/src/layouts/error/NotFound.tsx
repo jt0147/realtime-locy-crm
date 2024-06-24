@@ -4,7 +4,7 @@ const NotFound = () => {
     return (
         <>
             <div className="w-full h-full flex justify-center items-center">
-                <div className="grid gap-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                <div className="grid gap-6 text-gray-900 dark:text-white">
                     <div className="relative">
                         <h2 className="text-9xl font-extrabold tracking-widest">
                             404

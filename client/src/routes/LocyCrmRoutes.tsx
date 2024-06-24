@@ -6,6 +6,7 @@ import { MainWrapper, NotFound } from "@/layouts";
 import {
     CreateCustomer,
     Customer,
+    CustomerDetail,
     Dashboard,
     ForgotPassword,
     Report,
@@ -70,11 +71,7 @@ const LocyCrmRoutes = () => {
                         />
                         <Route
                             path="/customer/:id"
-                            element={
-                                <>
-                                    <p>Customer Details</p>
-                                </>
-                            }
+                            element={<CustomerDetail />}
                         />
 
                         <Route

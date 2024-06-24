@@ -1,3 +1,5 @@
+import { Dispatch } from "react";
+
 type TSizeModal =
     | "xs"
     | "sm"
@@ -17,6 +19,11 @@ export type TModalProps = {
     title?: string;
     size?: TSizeModal;
     loading?: boolean;
+};
+
+export type TCreateModalProps<T> = TModalProps & {
+    data: T;
+    setData: Dispatch<React.SetStateAction<T>>;
 };
 
 export type TUpdateModalProps<T> = Omit<TModalProps, "onSubmit"> & {

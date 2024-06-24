@@ -50,28 +50,44 @@ const NotificationProvider = ({ children }: TProviderProps) => {
                     if (connection.connectionId) {
                         connection.on("JobAssigned", function (payload) {
                             console.log(payload);
-                            if (user.id !== payload.data.idNguoiGui) {
+                            if (
+                                user.id !== payload.data.idNguoiGui ||
+                                user.username ===
+                                    payload.data.listDoiTuongLienQuan
+                            ) {
                                 notification(true, payload.message);
                             }
                         });
 
                         connection.on("JobChoosed", function (payload) {
                             console.log(payload);
-                            if (user.id !== payload.data.idNguoiGui) {
+                            if (
+                                user.id !== payload.data.idNguoiGui ||
+                                user.username ===
+                                    payload.data.listDoiTuongLienQuan
+                            ) {
                                 notification(true, payload.message);
                             }
                         });
 
                         connection.on("JobReturned", function (payload) {
                             console.log(payload);
-                            if (user.id !== payload.data.idNguoiGui) {
+                            if (
+                                user.id !== payload.data.idNguoiGui ||
+                                user.username ===
+                                    payload.data.listDoiTuongLienQuan
+                            ) {
                                 notification(true, payload.message);
                             }
                         });
 
                         connection.on("JobDenied", function (payload) {
                             console.log(payload);
-                            if (user.id !== payload.data.idNguoiGui) {
+                            if (
+                                user.id !== payload.data.idNguoiGui ||
+                                user.username ===
+                                    payload.data.listDoiTuongLienQuan
+                            ) {
                                 notification(true, payload.message);
                             }
                         });

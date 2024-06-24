@@ -230,7 +230,11 @@ const CustomerTable = ({
     }, []);
 
     const handleDelivery = useCallback(
-        async (payload: TDeliveryCustomerRequest, receiverName: string) => {
+        async (
+            payload: TDeliveryCustomerRequest,
+            receiverName: string,
+            receiverFullName: string
+        ) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const result: any = await deliveryMutation.mutateAsync(payload);
 
@@ -238,7 +242,9 @@ const CustomerTable = ({
                 // Call api for notification
                 const jobData = {
                     senderName: user?.username.toLowerCase(),
+                    senderFullName: user?.fullNameVI ?? "",
                     receiverName,
+                    receiverFullName,
                     numberJob: payload.idCustomers.length,
                     idNotification: result.data.idNotification,
                 };
@@ -273,6 +279,7 @@ const CustomerTable = ({
 
     const closeUpdateModal = useCallback(() => {
         setIsOpenUpdateModal(false);
+        setUpdateSelected(null);
     }, []);
 
     const handleUpdate = useCallback(
@@ -289,6 +296,7 @@ const CustomerTable = ({
 
     const closeDeleteModal = useCallback(() => {
         setIsOpenDeleteModal(false);
+        setIdDelete(null);
     }, []);
 
     const handleDelete = useCallback(
@@ -628,7 +636,8 @@ const CustomerTable = ({
 
                         await handleDelivery(
                             payload,
-                            employeeSelected.username
+                            employeeSelected.username,
+                            employeeSelected.fullNameVI
                         );
                     }}
                     loading={deliveryMutation.isLoading}

@@ -1,4 +1,5 @@
-﻿using VslCrmApiRealTime.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using VslCrmApiRealTime.Data;
 using VslCrmApiRealTime.Interfaces;
 
 namespace VslCrmApiRealTime.Services
@@ -12,15 +13,16 @@ namespace VslCrmApiRealTime.Services
             _db = db;
         }
 
-        public async Task<TblNotification?> Create(long IdTypeNotification, long IDSender, long? IDReceiver)
+        public async Task<TblNotification> Create(long IdTypeNotification, long IDSender, long? IDReceiver = null, string? objNoti = "")
         {
             var data = new TblNotification()
             {
                 IdNguoiGui = IDSender,
-                IdNguoiNhan = IDReceiver == null ? _db.TblSysUsers.Where(x => x.UserName != null && x.UserName == "Admin").Select(x => x.Id).FirstOrDefault() : IDReceiver,
+                IdNguoiNhan = IDReceiver != null ? IDReceiver : _db.TblSysUsers.Where(x => x.UserName != null && x.UserName.ToLower() == "admin").Select(x => x.Id).FirstOrDefault(),
                 IdLoaiNotification = IdTypeNotification,
                 KieuDoiTuongLienQuan = "tblDMCustomer",
                 Cd = DateTime.Now,
+                ListDoiTuongLienQuan = !string.IsNullOrEmpty(objNoti) ? objNoti : null,
             };
 
             await _db.TblNotifications.AddAsync(data);
