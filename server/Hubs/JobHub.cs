@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using VslCrmApiRealTime.Data;
+using VslCrmApiRealTime.Models.DTOs.Notification;
 using VslCrmApiRealTime.Models.Requests.Notification;
 using VslCrmApiRealTime.Models.Responses;
 
@@ -20,12 +21,12 @@ namespace VslCrmApiRealTime.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            // Get username from query string of URL
-            var username = Context.GetHttpContext()?.Request.Query["username"].ToString();
+            // Get user id from query string of URL
+            var userId = Context.GetHttpContext()?.Request.Query["userId"].ToString();
 
-            if (!string.IsNullOrEmpty(username)) {
+            if (!string.IsNullOrEmpty(userId)) {
                 // Store connection ID and username into dictionary
-                _connections[username] = Context.ConnectionId;
+                _connections[userId] = Context.ConnectionId;
             }
 
             // Add connection ID to group job-notification
@@ -36,13 +37,13 @@ namespace VslCrmApiRealTime.Hubs
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            // Get username from query string of URL
-            var username = Context.GetHttpContext()?.Request.Query["username"].ToString();
+            // Get user id from query string of URL
+            var userId = Context.GetHttpContext()?.Request.Query["userId"].ToString();
 
-            if (!string.IsNullOrEmpty(username))
+            if (!string.IsNullOrEmpty(userId))
             {
                 // Remove connection ID from dictionary
-                _connections.TryRemove(username, out _);
+                _connections.TryRemove(userId, out _);
             }
 
             // Remove connection ID from group job-notification
@@ -51,27 +52,39 @@ namespace VslCrmApiRealTime.Hubs
         }
 
         // Method to assign job
-        public async Task NotifyJobAssignment(AssignRequest req)
+        public async Task NotifyJobAssignment(NotificationHubRequest req)
         {
-            var notification = await _db.TblNotifications.Where(x => x.Id == req.IDNotification).FirstOrDefaultAsync();
+            var notification = await _db.TblNotifyWebs.Where(x => x.Id == req.IDNotification).Select(x => new NotificationDto()
+            {
+                Id = x.Id,
+                SenderId = x.IduserGui,
+                ReceiverId = x.IduserNhan,
+                RelatedId = x.IduserLienQuan,
+                SenderMessage = x.IddmmessNavigation.MessageSender ?? "",
+                ReceiverMessage = x.IddmmessNavigation.MessageReceiver ?? "",
+                RelatedMessage = x.IddmmessNavigation.MessageRelated ?? "",
+                IdMess = x.Iddmmess,
+                IsRead = x.IsRead,
+                CreatedAt = x.DateCreate != null ? string.Format("{0:yyyy-MM-dd}", x.DateCreate) : "",
+            }).FirstOrDefaultAsync();
 
             // Notify sender about the successful job assignment
-            if (_connections.TryGetValue(req.SenderName, out var senderConnectionId))
+            if (notification != null && _connections.TryGetValue(notification.SenderId.ToString(), out var senderConnectionId))
             {
                 var res = new NotificationResponse()
                 {
-                    Message = $"Bạn đã giao {req.NumberJob} khách hàng cho {req.ReceiverName} thành công!",
+                    Message = notification.SenderMessage,
                     Data = notification,
                 };
 
                 await Clients.Client(senderConnectionId).SendAsync("JobAssigned", res);
             }
 
-            if(notification?.ListDoiTuongLienQuan != null && string.IsNullOrEmpty(notification.ListDoiTuongLienQuan) && _connections.TryGetValue(notification.ListDoiTuongLienQuan, out var senderObjConnectionId))
+            if(notification != null && notification.RelatedId != null && _connections.TryGetValue(string.Format("{0}", notification.RelatedId), out var senderObjConnectionId))
             {
                 var res = new NotificationResponse()
                 {
-                    Message = $"{req.SenderFullName} đã giao {req.NumberJob} khách hàng cho {req.ReceiverFullName}!",
+                    Message = notification.RelatedMessage,
                     Data = notification,
                 };
 
@@ -79,127 +92,15 @@ namespace VslCrmApiRealTime.Hubs
             }
 
             // Notify receiver about the new job assignment
-            if (_connections.TryGetValue(req.ReceiverName, out var receiverConnectionId))
+            if (notification != null && _connections.TryGetValue(notification.ReceiverId.ToString(), out var receiverConnectionId))
             {
                 var res = new NotificationResponse()
                 {
-                    Message = $"Bạn được {req.SenderName} giao {req.NumberJob} khách hàng!",
+                    Message = notification.ReceiverMessage,
                     Data = notification,
                 };
 
                 await Clients.Client(receiverConnectionId).SendAsync("JobAssigned", res);
-            }
-        }
-
-        // Method to choose job
-        public async Task NotifyChooseJob(ChooseRequest req)
-        {
-            var notification = await _db.TblNotifications.Where(x => x.Id == req.IDNotification).FirstOrDefaultAsync();
-            
-            // Notify sender about the successful job assignment
-            if (_connections.TryGetValue(req.SenderName, out var senderConnectionId))
-            {
-                var res = new NotificationResponse()
-                {
-                    Message = $"Bạn đã nhận {req.NumberJob} khách hàng thành công!",
-                    Data = notification,
-                };
-
-                await Clients.Client(senderConnectionId).SendAsync("JobChoosed", res);
-            }
-
-            // Notify receiver about the new job assignment
-            if (_connections.TryGetValue(req.ReceiverName, out var receiverConnectionId))
-            {
-                var res = new NotificationResponse()
-                {
-                    Message = $"{req.SenderFullName} đã nhận {req.NumberJob} khách hàng!",
-                    Data = notification,
-                };
-
-                await Clients.Client(receiverConnectionId).SendAsync("JobChoosed", res);
-            }
-        }
-
-        // Method to return job
-        public async Task NotifyReturnJob(ReturnRequest req)
-        {
-            var notification = await _db.TblNotifications.Where(x => x.Id == req.IDNotification).FirstOrDefaultAsync();
-
-            // Notify sender about the successful job assignment
-            if (_connections.TryGetValue(req.SenderName, out var senderConnectionId))
-            {
-                var res = new NotificationResponse()
-                {
-                    Message = $"Bạn đã trả {req.NumberJob} khách hàng về kho thành công!",
-                    Data = notification,
-                };
-
-                await Clients.Client(senderConnectionId).SendAsync("JobReturned", res);
-            }
-
-            if (notification?.ListDoiTuongLienQuan != null && string.IsNullOrEmpty(notification.ListDoiTuongLienQuan) && _connections.TryGetValue(notification.ListDoiTuongLienQuan, out var senderObjConnectionId))
-            {
-                var res = new NotificationResponse()
-                {
-                    Message = $"{req.SenderFullName} đã trả {req.NumberJob} khách hàng về kho!",
-                    Data = notification,
-                };
-
-                await Clients.Client(senderObjConnectionId).SendAsync("JobAssigned", res);
-            }
-
-            // Notify receiver about the new job assignment
-            if (_connections.TryGetValue(req.ReceiverName, out var receiverConnectionId))
-            {
-                var res = new NotificationResponse()
-                {
-                    Message = $"{req.SenderFullName} đã trả {req.NumberJob} khách hàng về kho!",
-                    Data = notification,
-                };
-
-                await Clients.Client(receiverConnectionId).SendAsync("JobReturned", res);
-            }
-        }
-
-        // Method to deny job
-        public async Task NotifyDenyJob(DenyRequest req)
-        {
-            var notification = await _db.TblNotifications.Where(x => x.Id == req.IDNotification).FirstOrDefaultAsync();
-
-            // Notify sender about the successful job assignment
-            if (_connections.TryGetValue(req.SenderName, out var senderConnectionId))
-            {
-                var res = new NotificationResponse()
-                {
-                    Message = $"Bạn đã từ chối nhận {req.NumberJob} khách hàng thành công!",
-                    Data = notification,
-                };
-
-                await Clients.Client(senderConnectionId).SendAsync("JobDenied", res);
-            }
-
-            if (notification?.ListDoiTuongLienQuan != null && string.IsNullOrEmpty(notification.ListDoiTuongLienQuan) && _connections.TryGetValue(notification.ListDoiTuongLienQuan, out var senderObjConnectionId))
-            {
-                var res = new NotificationResponse()
-                {
-                    Message = $"{req.SenderFullName} đã từ chối nhận {req.NumberJob} khách hàng!",
-                    Data = notification,
-                };
-
-                await Clients.Client(senderObjConnectionId).SendAsync("JobAssigned", res);
-            }
-
-            // Notify receiver about the new job assignment
-            if (_connections.TryGetValue(req.ReceiverName, out var receiverConnectionId))
-            {
-                var res = new NotificationResponse()
-                {
-                    Message = $"{req.SenderFullName} đã từ chối nhận {req.NumberJob} khách hàng!",
-                    Data = notification,
-                };
-
-                await Clients.Client(receiverConnectionId).SendAsync("JobDenied", res);
             }
         }
     }

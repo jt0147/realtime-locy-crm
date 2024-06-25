@@ -1,9 +1,14 @@
 ﻿using VslCrmApiRealTime.Data;
+using VslCrmApiRealTime.Models.Requests.Customer;
 
 namespace VslCrmApiRealTime.Interfaces
 {
     public interface INotificationService
     {
-        Task<TblNotification> Create(long IdTypeNotification, long IDSender, long? IDReceiver = null, string? objNoti = "");
+        // Job
+        Task<long> CreateAcceptNotification(AcceptCustomerRequest req, List<TblDmcustomer> customers);
+        Task<long> CreateChooseNotification(ChooseCustomerRequest req);
+        Task<long> CreateDeliveryNotification(DeliveryCustomerRequest req);
+        Task<long> CreateDenyNotification(DenyCustomerRequest req);
     }
 }

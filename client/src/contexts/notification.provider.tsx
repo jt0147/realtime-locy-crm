@@ -20,9 +20,7 @@ const NotificationProvider = ({ children }: TProviderProps) => {
         const baseUrl = privateInstance.defaults.baseURL;
 
         const newConnection = new HubConnectionBuilder()
-            .withUrl(
-                `${baseUrl}/job?username=${user?.username.toLocaleLowerCase()}`
-            )
+            .withUrl(`${baseUrl}/job?userId=${user?.id}`)
             .configureLogging(LogLevel.Information)
             .withAutomaticReconnect()
             .build();
@@ -51,42 +49,8 @@ const NotificationProvider = ({ children }: TProviderProps) => {
                         connection.on("JobAssigned", function (payload) {
                             console.log(payload);
                             if (
-                                user.id !== payload.data.idNguoiGui ||
-                                user.username ===
-                                    payload.data.listDoiTuongLienQuan
-                            ) {
-                                notification(true, payload.message);
-                            }
-                        });
-
-                        connection.on("JobChoosed", function (payload) {
-                            console.log(payload);
-                            if (
-                                user.id !== payload.data.idNguoiGui ||
-                                user.username ===
-                                    payload.data.listDoiTuongLienQuan
-                            ) {
-                                notification(true, payload.message);
-                            }
-                        });
-
-                        connection.on("JobReturned", function (payload) {
-                            console.log(payload);
-                            if (
-                                user.id !== payload.data.idNguoiGui ||
-                                user.username ===
-                                    payload.data.listDoiTuongLienQuan
-                            ) {
-                                notification(true, payload.message);
-                            }
-                        });
-
-                        connection.on("JobDenied", function (payload) {
-                            console.log(payload);
-                            if (
-                                user.id !== payload.data.idNguoiGui ||
-                                user.username ===
-                                    payload.data.listDoiTuongLienQuan
+                                user.id === payload.data.receiverId ||
+                                user.id === payload.data.relatedId
                             ) {
                                 notification(true, payload.message);
                             }

@@ -163,22 +163,13 @@ const CustomerReceivedTable = ({
     }, []);
 
     const handleDelivery = useCallback(
-        async (
-            payload: TDeliveryCustomerRequest,
-            receiverName: string,
-            receiverFullName: string
-        ) => {
+        async (payload: TDeliveryCustomerRequest) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const result: any = await deliveryMutation.mutateAsync(payload);
 
             if (result.status) {
                 // Call api for notification
                 const jobData = {
-                    senderName: user?.username.toLowerCase(),
-                    senderFullName: user?.fullNameVI ?? "",
-                    receiverName,
-                    receiverFullName,
-                    numberJob: payload.idCustomers.length,
                     idNotification: result.data.idNotification,
                 };
 
@@ -187,7 +178,7 @@ const CustomerReceivedTable = ({
 
             closeDeliveryModal();
         },
-        [closeDeliveryModal, deliveryMutation, connection, user]
+        [closeDeliveryModal, deliveryMutation, connection]
     );
 
     const openUndeliveryModal = useCallback(() => {
@@ -215,26 +206,22 @@ const CustomerReceivedTable = ({
     }, []);
 
     const handleReturn = useCallback(
-        async (payload: TReturnCustomerRequest, receiverName: string) => {
+        async (payload: TReturnCustomerRequest) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const result: any = await returnMutation.mutateAsync(payload);
 
             if (result.status) {
                 // Call api for notification
                 const jobData = {
-                    senderName: user?.username.toLowerCase(),
-                    senderFullName: user?.fullNameVI.toLowerCase(),
-                    receiverName,
-                    numberJob: payload.idCustomers.length,
                     idNotification: result.data.idNotification,
                 };
 
-                await connection.invoke("NotifyReturnJob", jobData);
+                await connection.invoke("NotifyJobAssignment", jobData);
             }
 
             closeReturnModal();
         },
-        [closeReturnModal, returnMutation, connection, user]
+        [closeReturnModal, returnMutation, connection]
     );
 
     const renderCell = useCallback(
@@ -505,11 +492,7 @@ const CustomerReceivedTable = ({
                                 jobAssignmentInfoRef.current?.value ?? "",
                         };
 
-                        await handleDelivery(
-                            payload,
-                            employeeSelected.username,
-                            employeeSelected.fullNameVI
-                        );
+                        await handleDelivery(payload);
                     }}
                     loading={deliveryMutation.isLoading}
                 >
@@ -554,13 +537,10 @@ const CustomerReceivedTable = ({
                         const selectedIds: number[] = selectedData.map(
                             (item) => item.id
                         );
-                        await handleReturn(
-                            {
-                                idCustomers: selectedIds,
-                                idUser: user?.id as number,
-                            },
-                            "admin"
-                        );
+                        await handleReturn({
+                            idCustomers: selectedIds,
+                            idUser: user?.id as number,
+                        });
                     }}
                     loading={returnMutation.isLoading}
                 />

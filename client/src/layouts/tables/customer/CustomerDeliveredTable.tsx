@@ -125,14 +125,10 @@ const CustomerDeliveredTable = ({
             if (result.status) {
                 // Call api for notification.
                 const jobData = {
-                    senderName: user?.username,
-                    senderFullName: user?.fullNameVI,
-                    receiverName: "admin",
-                    numberJob: payload.idCustomers.length,
                     idNotification: result.data.idNotification,
                 };
 
-                await connection.invoke("NotifyChooseJob", jobData);
+                await connection.invoke("NotifyJobAssignment", jobData);
             }
 
             closeAcceptModal();
@@ -162,14 +158,10 @@ const CustomerDeliveredTable = ({
             if (result.status) {
                 // Call api for notification.
                 const jobData = {
-                    senderName: user?.username,
-                    senderFullName: user?.fullNameVI,
-                    receiverName: "admin",
-                    numberJob: payload.idCustomers.length,
                     idNotification: result.data.idNotification,
                 };
 
-                await connection.invoke("NotifyDenyJob", jobData);
+                await connection.invoke("NotifyJobAssignment", jobData);
             }
 
             closeDenyModal();

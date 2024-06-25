@@ -206,14 +206,10 @@ const CustomerTable = ({
             if (result.status) {
                 // Call api for notification.
                 const jobData = {
-                    senderName: user?.username,
-                    senderFullName: user?.fullNameVI,
-                    receiverName: "admin",
-                    numberJob: payload.idCustomers.length,
                     idNotification: result.data.idNotification,
                 };
 
-                await connection.invoke("NotifyChooseJob", jobData);
+                await connection.invoke("NotifyJobAssignment", jobData);
             }
 
             closeChooseModal();
@@ -230,22 +226,13 @@ const CustomerTable = ({
     }, []);
 
     const handleDelivery = useCallback(
-        async (
-            payload: TDeliveryCustomerRequest,
-            receiverName: string,
-            receiverFullName: string
-        ) => {
+        async (payload: TDeliveryCustomerRequest) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const result: any = await deliveryMutation.mutateAsync(payload);
 
             if (result.status) {
                 // Call api for notification
                 const jobData = {
-                    senderName: user?.username.toLowerCase(),
-                    senderFullName: user?.fullNameVI ?? "",
-                    receiverName,
-                    receiverFullName,
-                    numberJob: payload.idCustomers.length,
                     idNotification: result.data.idNotification,
                 };
 
@@ -254,7 +241,7 @@ const CustomerTable = ({
 
             closeDeliveryModal();
         },
-        [closeDeliveryModal, deliveryMutation, connection, user]
+        [closeDeliveryModal, deliveryMutation, connection]
     );
 
     const openUndeliveryModal = useCallback(() => {
@@ -634,11 +621,7 @@ const CustomerTable = ({
                                 jobAssignmentInfoRef.current?.value ?? "",
                         };
 
-                        await handleDelivery(
-                            payload,
-                            employeeSelected.username,
-                            employeeSelected.fullNameVI
-                        );
+                        await handleDelivery(payload);
                     }}
                     loading={deliveryMutation.isLoading}
                 >

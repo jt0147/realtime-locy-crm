@@ -23,15 +23,13 @@ namespace VslCrmApiRealTime.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly ICustomerJobService _customerJobService;
         private readonly INotificationService _notificationService;
-        private readonly ILogger<CustomerController> _logger;
 
-        public CustomerController(ICustomerService customerService, IEmployeeService employeeService, ICustomerJobService customerJobService, INotificationService notificationService, ILogger<CustomerController> logger)
+        public CustomerController(ICustomerService customerService, IEmployeeService employeeService, ICustomerJobService customerJobService, INotificationService notificationService)
         {
             _customerService = customerService;
             _employeeService = employeeService;
             _customerJobService = customerJobService;
             _notificationService = notificationService;
-            _logger = logger;
         }
 
         /**
@@ -308,15 +306,15 @@ namespace VslCrmApiRealTime.Controllers
 
                 await _customerJobService.ChooseCustomers(data, req);
 
-                var notification = await _notificationService.Create(7, req.IDUser);
+                var notificationId = await _notificationService.CreateChooseNotification(req);
 
                 var response = new Response()
                 {
                     Status = true,
-                    Message = "Bạn đã nhận khách hàng thành công",
+                    Message = "Bạn đã tự nhận khách hàng về quản lý thành công!",
                     Data = new
                     {
-                        IDNotification = notification?.Id,
+                        IDNotification = notificationId,
                     },
                 };
 
@@ -362,19 +360,15 @@ namespace VslCrmApiRealTime.Controllers
                 }
 
                 await _customerJobService.DeliveryCustomers(data, req);
-
-                var accountAssign = await _employeeService.GetAccountById(req.IDUserAssign);
-                var objNoti = accountAssign?.UserName?.ToLower() != "admin" ? "admin" : null;
-
-                var notification = await _notificationService.Create(6, idUser, req.IDAccountEmployee, objNoti);
+                var noticationId = await _notificationService.CreateDeliveryNotification(req);
 
                 var response = new Response()
                 {
                     Status = true,
-                    Message = "Bạn đã giao khách hàng thành công",
+                    Message = "Bạn đã giao khách hàng thành công!",
                     Data = new
                     {
-                        IDNotification = notification?.Id,
+                        IDNotification = noticationId,
                     },
                 };
 
@@ -416,7 +410,7 @@ namespace VslCrmApiRealTime.Controllers
                 var response = new Response()
                 {
                     Status = true,
-                    Message = "Bạn đã huỷ giao khách hàng thành công",
+                    Message = "Bạn đã huỷ giao khách hàng thành công!",
                     Data = null,
                 };
 
@@ -447,8 +441,7 @@ namespace VslCrmApiRealTime.Controllers
             try
             {
                 var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
-                var objNoti = "";
-               
+
                 if (data == null)
                 {
                     throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi nhận khách hàng trên hệ thống!");
@@ -459,21 +452,9 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.BadRequest, "Bad request", "Lỗi nhận khách hàng trên hệ thống!");
                 }
 
-                foreach (var item in data)
-                {
-                    if (item.IduserGiaoViecNavigation?.UserName?.ToLower() != "admin")
-                    {
-                        _logger.LogError(JsonSerializer.Serialize(item));
-                        objNoti = item.IduserGiaoViecNavigation?.UserName?.ToLower();
-                        break;
-                    }
-                }
-
-                _logger.LogError(objNoti);
-
                 await _customerJobService.AcceptCustomers(data, req);
 
-                var notification = await _notificationService.Create(7, req.IDUser, null, objNoti);
+                var notificationId = await _notificationService.CreateAcceptNotification(req, data);
 
                 var response = new Response()
                 {
@@ -481,7 +462,7 @@ namespace VslCrmApiRealTime.Controllers
                     Message = "Bạn đã nhận khách hàng thành công",
                     Data = new
                     {
-                        IDNotification = notification?.Id,
+                        IDNotification = notificationId,
                     },
                 };
 
@@ -512,25 +493,13 @@ namespace VslCrmApiRealTime.Controllers
             try
             {
                 var data = await _customerJobService.GetCustomersByIdArray(req.IdCustomers);
-                var objNoti = "";
-
+                
                 if (data == null)
                 {
                     throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi trả khách hàng về kho trên hệ thống!");
                 }
 
-                foreach (var item in data)
-                {
-                    if (item.IduserGiaoViecNavigation?.UserName?.ToLower() != "admin")
-                    {
-                        objNoti = item.IduserGiaoViecNavigation?.UserName?.ToLower();
-                        break;
-                    }
-                }
-
                 await _customerJobService.ReturnCustomers(data, req);
-
-                var notification = await _notificationService.Create(8, req.IDUser, null, objNoti);
 
                 var response = new Response()
                 {
@@ -538,7 +507,7 @@ namespace VslCrmApiRealTime.Controllers
                     Message = "Bạn đã trả khách hàng về kho thành công",
                     Data = new
                     {
-                        IDNotification = notification?.Id,
+                        IDNotification = 1,
                     },
                 };
 
@@ -569,7 +538,6 @@ namespace VslCrmApiRealTime.Controllers
             try
             {
                 var data = await _customerJobService.GetCustomersByIdArray(req.IDCustomers);
-                var objNoti = "";
 
                 if (data == null)
                 {
@@ -581,18 +549,7 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.BadRequest, "Bad request", "Lỗi từ chối khách hàng trên hệ thống!");
                 }
 
-                foreach (var item in data)
-                {
-                    if (item.IduserGiaoViecNavigation?.UserName?.ToLower() != "admin")
-                    {
-                        objNoti = item.IduserGiaoViecNavigation?.UserName?.ToLower();
-                        break;
-                    }
-                }
-
                 await _customerJobService.DenyCustomers(data, req);
-
-                var notification = await _notificationService.Create(9, req.IDUser, null, objNoti);
 
                 var response = new Response()
                 {
@@ -600,7 +557,7 @@ namespace VslCrmApiRealTime.Controllers
                     Message = "Bạn đã từ chối khách hàng thành công",
                     Data = new
                     {
-                        IDNotification = notification?.Id,
+                        IDNotification = 1,
                     },
                 };
 
