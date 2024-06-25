@@ -1,6 +1,10 @@
 import { Tabs, Tab } from "@nextui-org/react";
 
-import { CustomerContactTable } from "../tables";
+import {
+    CustomerContactTable,
+    CustomerMajorTable,
+    CustomerOperationalTable,
+} from "../tables";
 
 type TSectionProps = {
     id: number;
@@ -51,7 +55,11 @@ const CustomerRelatedListSection = ({
                             </p>
                         }
                     >
-                        Danh sách tác nghiệp
+                        <CustomerOperationalTable
+                            id={id}
+                            isRefresh={isRefresh}
+                            onRefreshDone={onRefreshDone}
+                        />
                     </Tab>
                     <Tab
                         key="majors"
@@ -61,7 +69,11 @@ const CustomerRelatedListSection = ({
                             </p>
                         }
                     >
-                        Danh sách nghiệp vụ
+                        <CustomerMajorTable
+                            id={id}
+                            isRefresh={isRefresh}
+                            onRefreshDone={onRefreshDone}
+                        />
                     </Tab>
                     <Tab
                         key="classifies"
