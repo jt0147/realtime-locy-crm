@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
     Button,
+    Input,
     Modal,
     ModalBody,
     ModalContent,
@@ -10,24 +11,26 @@ import {
 import { isEqual } from "lodash";
 
 import { Select } from "@/components";
-import { TMajorDto, TUpdateCustomerMajorRequest } from "@/types";
+import { TCustomerTypeDto, TUpdateCustomerEvaluateRequest } from "@/types";
 import { notification } from "@/utilities";
 
 import { TUpdateModalProps } from "../../types";
 
-const UpdateCustomerMajorModal = ({
+const UpdateCustomerEvaluateModal = ({
     isOpen,
     onClose: onCloseProp,
     onSubmit,
-    title = "cập nhật nghiệp vụ",
+    title = "cập nhật đánh giá",
     size = "sm",
     loading,
     item,
-    majors,
-}: TUpdateModalProps<TUpdateCustomerMajorRequest> & {
-    majors: TMajorDto[] | [];
+    types,
+}: TUpdateModalProps<TUpdateCustomerEvaluateRequest> & {
+    types: TCustomerTypeDto[] | [];
 }) => {
-    const [data, setData] = useState<TUpdateCustomerMajorRequest | null>(null);
+    const [data, setData] = useState<TUpdateCustomerEvaluateRequest | null>(
+        null
+    );
 
     /**
      * * Handle events
@@ -61,15 +64,15 @@ const UpdateCustomerMajorModal = ({
                             {data && (
                                 <div className="grid gap-4">
                                     <Select
-                                        label="Nghiệp vụ"
-                                        options={majors}
+                                        label="Đánh giá"
+                                        options={types}
                                         option={{
                                             label: "nameVI",
                                             key: "id",
                                         }}
                                         value={
-                                            data.idNghiepVu
-                                                ? data.idNghiepVu.toString()
+                                            data.idCustomerType
+                                                ? data.idCustomerType.toString()
                                                 : undefined
                                         }
                                         onChange={(e) => {
@@ -77,7 +80,7 @@ const UpdateCustomerMajorModal = ({
                                                 prev
                                                     ? {
                                                           ...prev,
-                                                          idNghiepVu:
+                                                          idCustomerType:
                                                               e.target.value !==
                                                               ""
                                                                   ? parseInt(
@@ -89,6 +92,21 @@ const UpdateCustomerMajorModal = ({
                                                     : null
                                             );
                                         }}
+                                    />
+                                    <Input
+                                        label="Ghi chú"
+                                        value={data.ghiChu}
+                                        onChange={(e) =>
+                                            setData((prev) =>
+                                                prev
+                                                    ? {
+                                                          ...prev,
+                                                          ghiChu: e.target
+                                                              .value,
+                                                      }
+                                                    : null
+                                            )
+                                        }
                                     />
                                 </div>
                             )}
@@ -118,4 +136,4 @@ const UpdateCustomerMajorModal = ({
     );
 };
 
-export default UpdateCustomerMajorModal;
+export default UpdateCustomerEvaluateModal;

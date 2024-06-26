@@ -1,9 +1,13 @@
 import { Tabs, Tab } from "@nextui-org/react";
 
 import {
+    CustomerClassifyTable,
     CustomerContactTable,
+    CustomerEvaluateTable,
+    CustomerImExTable,
     CustomerMajorTable,
     CustomerOperationalTable,
+    CustomerRouteTable,
 } from "../tables";
 
 type TSectionProps = {
@@ -83,7 +87,11 @@ const CustomerRelatedListSection = ({
                             </p>
                         }
                     >
-                        Danh sách phân loại
+                        <CustomerClassifyTable
+                            id={id}
+                            isRefresh={isRefresh}
+                            onRefreshDone={onRefreshDone}
+                        />
                     </Tab>
                     <Tab
                         key="evaluates"
@@ -93,7 +101,11 @@ const CustomerRelatedListSection = ({
                             </p>
                         }
                     >
-                        Danh sách đánh giá
+                        <CustomerEvaluateTable
+                            id={id}
+                            isRefresh={isRefresh}
+                            onRefreshDone={onRefreshDone}
+                        />
                     </Tab>
                     <Tab
                         key="routes"
@@ -103,7 +115,11 @@ const CustomerRelatedListSection = ({
                             </p>
                         }
                     >
-                        Danh sách tuyến hàng
+                        <CustomerRouteTable
+                            id={id}
+                            isRefresh={isRefresh}
+                            onRefreshDone={onRefreshDone}
+                        />
                     </Tab>
                     <Tab
                         key="imex"
@@ -113,7 +129,11 @@ const CustomerRelatedListSection = ({
                             </p>
                         }
                     >
-                        Danh sách xuất nhập khẩu
+                        <CustomerImExTable
+                            id={id}
+                            isRefresh={isRefresh}
+                            onRefreshDone={onRefreshDone}
+                        />
                     </Tab>
                 </Tabs>
             </div>

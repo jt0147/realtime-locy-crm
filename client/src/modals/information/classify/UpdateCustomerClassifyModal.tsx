@@ -10,24 +10,26 @@ import {
 import { isEqual } from "lodash";
 
 import { Select } from "@/components";
-import { TMajorDto, TUpdateCustomerMajorRequest } from "@/types";
+import { TTypeOfCustomerDto, TUpdateCustomerClassifyRequest } from "@/types";
 import { notification } from "@/utilities";
 
 import { TUpdateModalProps } from "../../types";
 
-const UpdateCustomerMajorModal = ({
+const UpdateCustomerClassifyModal = ({
     isOpen,
     onClose: onCloseProp,
     onSubmit,
-    title = "cập nhật nghiệp vụ",
+    title = "cập nhật phân loại khách hàng",
     size = "sm",
     loading,
     item,
-    majors,
-}: TUpdateModalProps<TUpdateCustomerMajorRequest> & {
-    majors: TMajorDto[] | [];
+    types,
+}: TUpdateModalProps<TUpdateCustomerClassifyRequest> & {
+    types: TTypeOfCustomerDto[] | [];
 }) => {
-    const [data, setData] = useState<TUpdateCustomerMajorRequest | null>(null);
+    const [data, setData] = useState<TUpdateCustomerClassifyRequest | null>(
+        null
+    );
 
     /**
      * * Handle events
@@ -62,14 +64,14 @@ const UpdateCustomerMajorModal = ({
                                 <div className="grid gap-4">
                                     <Select
                                         label="Nghiệp vụ"
-                                        options={majors}
+                                        options={types}
                                         option={{
                                             label: "nameVI",
                                             key: "id",
                                         }}
                                         value={
-                                            data.idNghiepVu
-                                                ? data.idNghiepVu.toString()
+                                            data.idPhanLoaiKhachHang
+                                                ? data.idPhanLoaiKhachHang.toString()
                                                 : undefined
                                         }
                                         onChange={(e) => {
@@ -77,7 +79,7 @@ const UpdateCustomerMajorModal = ({
                                                 prev
                                                     ? {
                                                           ...prev,
-                                                          idNghiepVu:
+                                                          idPhanLoaiKhachHang:
                                                               e.target.value !==
                                                               ""
                                                                   ? parseInt(
@@ -118,4 +120,4 @@ const UpdateCustomerMajorModal = ({
     );
 };
 
-export default UpdateCustomerMajorModal;
+export default UpdateCustomerClassifyModal;
