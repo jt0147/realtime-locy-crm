@@ -78,6 +78,8 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerJobService, CustomerJobService>();
 builder.Services.AddScoped<ICustomerInfoService, CustomerInfoService>();
 
+builder.Services.AddScoped<IReportService, ReportService>();
+
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // Add authorization role
