@@ -10,6 +10,7 @@ import {
     Dashboard,
     ForgotPassword,
     Report,
+    Setting,
     SignIn,
 } from "@/pages";
 
@@ -38,14 +39,7 @@ const LocyCrmRoutes = () => {
                     <Route element={<MainWrapper />}>
                         <Route path="/" element={<Dashboard />} />
 
-                        <Route
-                            path="/settings"
-                            element={
-                                <>
-                                    <p>Setting</p>
-                                </>
-                            }
-                        />
+                        <Route path="/settings" element={<Setting />} />
 
                         <Route
                             path="/employee"
