@@ -112,9 +112,76 @@ namespace VslCrmApiRealTime.Services
             return notification.Id;
         }
 
-        public async Task<long> CreateDenyNotification(DenyCustomerRequest req)
+        public async Task<long> CreateDenyNotification(DenyCustomerRequest req, List<TblDmcustomer> customers)
         {
-            return 1;
+            var idAdmin = await _db.TblSysUsers.Where(x => x.UserName != null && x.UserName.ToLower() == "admin").Select(x => x.Id).FirstOrDefaultAsync();
+            var senderName = await _db.TblNhanSus.Where(x => x.Id == req.IDEmployee).Select(x => x.HoTenVI).FirstOrDefaultAsync();
+
+            var totalCustomer = customers.Count(customer => customer.IduserGiaoViec != idAdmin);
+            var idAssign = customers.Where(customer => customer.IduserGiaoViec != null && customer.IduserGiaoViec != idAdmin)
+                                    .Select(customer => customer.IduserGiaoViec).FirstOrDefault();
+            var onlyAdmin = totalCustomer == 0;
+
+            var notificationMess = new TblNotifyWebMessage()
+            {
+                MessageSender = $"Bạn đã từ chối {req.IDCustomers.Length} khách hàng!",
+                MessageReceiver = onlyAdmin ? $"{senderName} từ chối {req.IDCustomers.Length} khách hàng" : $"{senderName} từ chối {totalCustomer} khách hàng",
+                MessageRelated = onlyAdmin ? null : $"{senderName} từ chối {req.IDCustomers.Length} khách hàng",
+            };
+
+            await _db.TblNotifyWebMessages.AddAsync(notificationMess);
+            await _db.SaveChangesAsync();
+
+            var notification = new TblNotifyWeb()
+            {
+                IduserGui = req.IDUser,
+                IduserNhan = (!onlyAdmin && idAssign != null) ? idAssign.Value : idAdmin,
+                IduserLienQuan = onlyAdmin ? null : idAdmin,
+                IsRead = false,
+                Iddmmess = notificationMess.Id,
+                DateCreate = DateTime.Now,
+            };
+
+            await _db.TblNotifyWebs.AddAsync(notification);
+            await _db.SaveChangesAsync();
+
+            return notification.Id;
+        }
+
+        public async Task<long> CreateReturnNotification(ReturnCustomerRequest req, List<TblDmcustomer> customers)
+        {
+            var idAdmin = await _db.TblSysUsers.Where(x => x.UserName != null && x.UserName.ToLower() == "admin").Select(x => x.Id).FirstOrDefaultAsync();
+            var sender = await _db.TblSysUsers.Where(x => x.Id == req.IDUser).Select(x => x.IdnhanVienNavigation).FirstOrDefaultAsync();
+
+            var totalCustomer = customers.Count(customer => customer.IduserGiaoViec != idAdmin);
+            var idAssign = customers.Where(customer => customer.IduserGiaoViec != null && customer.IduserGiaoViec != idAdmin)
+                                    .Select(customer => customer.IduserGiaoViec).FirstOrDefault();
+            var onlyAdmin = totalCustomer == 0;
+
+            var notificationMess = new TblNotifyWebMessage()
+            {
+                MessageSender = $"Bạn đã trả {customers.Count()} khách hàng về kho",
+                MessageReceiver = onlyAdmin ? $"{sender?.HoTenVI} trả {customers.Count()} khách hàng về kho" : $"{sender?.HoTenVI} trả {totalCustomer} khách hàng về kho",
+                MessageRelated = onlyAdmin ? null : $"{sender?.HoTenVI} trả {customers.Count()} khách hàng về kho",
+            };
+
+            await _db.TblNotifyWebMessages.AddAsync(notificationMess);
+            await _db.SaveChangesAsync();
+
+            var notification = new TblNotifyWeb()
+            {
+                IduserGui = req.IDUser,
+                IduserNhan = (!onlyAdmin && idAssign != null) ? idAssign.Value : idAdmin,
+                IduserLienQuan = onlyAdmin ? null : idAdmin,
+                IsRead = false,
+                Iddmmess = notificationMess.Id,
+                DateCreate = DateTime.Now,
+            };
+
+            await _db.TblNotifyWebs.AddAsync(notification);
+            await _db.SaveChangesAsync();
+
+            return notification.Id;
         }
     }
 }

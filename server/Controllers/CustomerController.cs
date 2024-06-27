@@ -499,6 +499,8 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi trả khách hàng về kho trên hệ thống!");
                 }
 
+                var notificationId = await _notificationService.CreateReturnNotification(req, data);
+
                 await _customerJobService.ReturnCustomers(data, req);
 
                 var response = new Response()
@@ -507,7 +509,7 @@ namespace VslCrmApiRealTime.Controllers
                     Message = "Bạn đã trả khách hàng về kho thành công",
                     Data = new
                     {
-                        IDNotification = 1,
+                        IDNotification = notificationId,
                     },
                 };
 
@@ -551,13 +553,15 @@ namespace VslCrmApiRealTime.Controllers
 
                 await _customerJobService.DenyCustomers(data, req);
 
+                var notificationId = await _notificationService.CreateDenyNotification(req, data);
+
                 var response = new Response()
                 {
                     Status = true,
                     Message = "Bạn đã từ chối khách hàng thành công",
                     Data = new
                     {
-                        IDNotification = 1,
+                        IDNotification = notificationId,
                     },
                 };
 

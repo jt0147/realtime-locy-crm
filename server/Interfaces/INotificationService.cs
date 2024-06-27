@@ -9,6 +9,7 @@ namespace VslCrmApiRealTime.Interfaces
         Task<long> CreateAcceptNotification(AcceptCustomerRequest req, List<TblDmcustomer> customers);
         Task<long> CreateChooseNotification(ChooseCustomerRequest req);
         Task<long> CreateDeliveryNotification(DeliveryCustomerRequest req);
-        Task<long> CreateDenyNotification(DenyCustomerRequest req);
+        Task<long> CreateDenyNotification(DenyCustomerRequest req, List<TblDmcustomer> customers);
+        Task<long> CreateReturnNotification(ReturnCustomerRequest req, List<TblDmcustomer> customers);
     }
 }
