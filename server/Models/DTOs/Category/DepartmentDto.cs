@@ -8,5 +8,6 @@
         public string? GhiChu { get; set; }
         public bool? FlagFavorite { get; set; }
         public long IdVanPhong { get; set; }
+        public string? VanPhong { get; set; }
     }
 }

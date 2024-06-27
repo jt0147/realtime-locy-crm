@@ -334,6 +334,7 @@ namespace VslCrmApiRealTime.Services
                 IdVanPhong = x.IddmvanPhong ?? -1,
                 GhiChu = x.GhiChu ?? "",
                 FlagFavorite = x.FlagFavorite ?? false,
+                VanPhong = x.IddmvanPhongNavigation != null ? x.IddmvanPhongNavigation.NameVI ?? "" : "",
             }).ToListAsync();
 
             return data;
@@ -634,6 +635,7 @@ namespace VslCrmApiRealTime.Services
                     IdVanPhong = x.IddmvanPhong ?? -1,
                     GhiChu = x.GhiChu ?? "",
                     FlagFavorite = x.FlagFavorite ?? false,
+                    VanPhong = x.IddmvanPhongNavigation != null ? x.IddmvanPhongNavigation.NameVI ?? "" : "",
                 }).OrderByDescending(x => x.Id).Skip(Start).Take(Size).ToListAsync();
             }
             else
@@ -646,6 +648,7 @@ namespace VslCrmApiRealTime.Services
                     IdVanPhong = x.IddmvanPhong ?? -1,
                     GhiChu = x.GhiChu ?? "",
                     FlagFavorite = x.FlagFavorite ?? false,
+                    VanPhong = x.IddmvanPhongNavigation != null ? x.IddmvanPhongNavigation.NameVI ?? "" : "",
                 }).OrderByDescending(x => x.Id).Skip(Start).Take(Size)
                 .Where(
                     x => (x.NameVI != null && x.NameVI.Contains(Search)) ||

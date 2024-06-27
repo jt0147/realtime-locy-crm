@@ -27,7 +27,7 @@ const Setting = () => {
                 >
                     {user?.permission.includes("1048576") && (
                         <Tab
-                            key="contacts"
+                            key="system"
                             title={
                                 <p className="font-medium text-sm">
                                     Cài đặt hệ thống
@@ -38,7 +38,7 @@ const Setting = () => {
                         </Tab>
                     )}
                     <Tab
-                        key="operationals"
+                        key="password"
                         title={
                             <p className="font-medium text-sm">Đổi mật khẩu</p>
                         }

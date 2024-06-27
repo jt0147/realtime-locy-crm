@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { Loading } from "@/components";
 import { MainWrapper, NotFound } from "@/layouts";
 import {
+    Category,
     CreateCustomer,
     Customer,
     CustomerDetail,
@@ -68,14 +69,7 @@ const LocyCrmRoutes = () => {
                             element={<CustomerDetail />}
                         />
 
-                        <Route
-                            path="/category"
-                            element={
-                                <>
-                                    <p>Category</p>
-                                </>
-                            }
-                        />
+                        <Route path="/category" element={<Category />} />
 
                         <Route path="/report" element={<Report />} />
                     </Route>

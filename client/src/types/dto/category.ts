@@ -26,6 +26,7 @@ export type TDepartmentDto = {
     ghiChu: string;
     flagFavorite: boolean;
     idVanPhong: number;
+    vanPhong: string;
 };
 
 export type TOfficeDto = {
