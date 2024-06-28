@@ -12,7 +12,7 @@ type TGetParams = {
     name: string;
     idPosition: number;
     idDepartment: number;
-    idVanPhong: number;
+    idOffice: number;
 
     status: boolean;
 };

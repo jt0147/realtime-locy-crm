@@ -24,9 +24,9 @@ namespace VslCrmApiRealTime.Services
             var q = _db.TblNhanSus.AsQueryable();
 
             // Filter
-            if (!string.IsNullOrEmpty(query.FullName))
+            if (!string.IsNullOrEmpty(query.Name))
             {
-                var text = query.FullName.ToLower().Trim();
+                var text = query.Name.ToLower().Trim();
                 q = q.Where(x => x.HoTenVI.ToLower().Contains(text));
             }
 

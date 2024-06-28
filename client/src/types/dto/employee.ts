@@ -1,7 +1,7 @@
 export type TEmployeeDto = {
     id: number;
-    iDPosition: number;
-    Position: string;
+    idPosition: number;
+    position: string;
     idDepartment: number;
     department: string;
     idOffice: number;
