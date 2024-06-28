@@ -6,9 +6,11 @@ import { MainWrapper, NotFound } from "@/layouts";
 import {
     Category,
     CreateCustomer,
+    CreateEmployee,
     Customer,
     CustomerDetail,
     Dashboard,
+    Employee,
     ForgotPassword,
     Report,
     Setting,
@@ -42,21 +44,10 @@ const LocyCrmRoutes = () => {
 
                         <Route path="/settings" element={<Setting />} />
 
-                        <Route
-                            path="/employee"
-                            element={
-                                <>
-                                    <p>Employee</p>
-                                </>
-                            }
-                        />
+                        <Route path="/employee" element={<Employee />} />
                         <Route
                             path="/employee/new"
-                            element={
-                                <>
-                                    <p>Create Employee</p>
-                                </>
-                            }
+                            element={<CreateEmployee />}
                         />
 
                         <Route path="/customer" element={<Customer />} />

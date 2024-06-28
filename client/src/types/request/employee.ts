@@ -15,6 +15,7 @@ export type TCreateEmployeeRequest = {
     gender: number | undefined;
     homeTown: string;
     address: string;
+    email: string;
     idNumber: string;
     placeForIDCard: string;
     dayForIDCard: string;
@@ -43,6 +44,7 @@ export type TUpdateEmployeeRequest = {
     gender: number | undefined;
     homeTown: string;
     address: string;
+    email: string;
     idNumber: string;
     placeForIDCard: string;
     dayForIDCard: string;

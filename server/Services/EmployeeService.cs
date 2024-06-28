@@ -138,12 +138,13 @@ namespace VslCrmApiRealTime.Services
                 QueQuan = req.HomeTown ?? "",
                 DiaChiHienTai = req.Address ?? "",
                 SoCmt = req.IDNumber ?? "",
+                Email = req.Email ?? "",
                 NoiCapCmt = req.PlaceForIDCard ?? "",
                 NgayCapCmt = string.IsNullOrEmpty(req.DayForIDCard) != true ? DateOnly.Parse(req.DayForIDCard) : null,
                 PhotoUrl = req.PhotoURL ?? "",
                 GhiChu = req.Note ?? "",
                 FlagDelete = false,
-                SoLuongKh = req.NumberOfManagedCustomers ?? _db.TblSysOptions.Select(x => x.SoLuongKh).FirstOrDefault(),
+                SoLuongKh = req.NumberOfManagedCustomers > 0 ? req.NumberOfManagedCustomers : _db.TblSysOptions.Select(x => x.SoLuongKh).FirstOrDefault(),
                 CreateDate = DateTime.Now,
             };
 
@@ -310,6 +311,7 @@ namespace VslCrmApiRealTime.Services
             {
                 info.NamSinh = DateOnly.Parse(req.BirthDay);
             }
+            info.Email = req.Email;
             info.GioiTinh = req.Gender;
             info.QueQuan = req.HomeTown ?? info.QueQuan;
             info.DiaChiHienTai = req.Address ?? info.DiaChiHienTai;
@@ -321,7 +323,7 @@ namespace VslCrmApiRealTime.Services
             }
             info.PhotoUrl = req.PhotoURL ?? info.PhotoUrl;
             info.GhiChu = req.Note ?? info.GhiChu;
-            info.SoLuongKh = req.NumberOfManagedCustomers ?? info.SoLuongKh;
+            info.SoLuongKh = req.NumberOfManagedCustomers > 0 ? req.NumberOfManagedCustomers : info.SoLuongKh;
             info.EditDate = DateTime.Now;
 
             await _db.SaveChangesAsync();

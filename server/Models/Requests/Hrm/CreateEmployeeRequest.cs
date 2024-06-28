@@ -10,6 +10,7 @@
         public long? IDOffice { get; set; }
         public required string EmployeeCode { get; set; }
         public required string FullNameVI { get; set; }
+        public required string Email { get; set; }
         public string? FullNameEN { get; set; }
         public string? BirthDay { get; set; }
         public int? Gender { get; set; }

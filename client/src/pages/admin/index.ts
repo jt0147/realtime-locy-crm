@@ -6,3 +6,4 @@ export const Report = lazy(() => import("./Report"));
 export const Setting = lazy(() => import("./Setting"));
 
 export * from "./customer";
+export * from "./hrm";

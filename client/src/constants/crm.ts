@@ -1,11 +1,11 @@
 export const gender = [
     {
         id: 0,
-        nameVI: "nam",
+        nameVI: "Nam",
     },
     {
         id: 1,
-        nameVI: "nữ",
+        nameVI: "Nữ",
     },
 ];
 

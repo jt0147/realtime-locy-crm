@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
+import { Button, Input, Textarea } from "@nextui-org/react";
 
 import {
     createCustomer,
@@ -16,7 +17,6 @@ import {
     TCountryDto,
     TCreateCustomerRequest,
 } from "@/types";
-import { Button, Input, Textarea } from "@nextui-org/react";
 
 const initCustomer: TCreateCustomerRequest = {
     idTypeOfBusiness: undefined,
