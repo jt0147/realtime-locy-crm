@@ -22,7 +22,7 @@ const CreatePortModal = ({
     onClose: onCloseProp,
     onSubmit,
     title = "tạo cảng",
-    size = "full",
+    size = "5xl",
     loading,
     data,
     setData,

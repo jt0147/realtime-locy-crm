@@ -107,6 +107,13 @@ namespace VslCrmApiRealTime.Controllers
         {
             try
             {
+                var isExistCode = await _categoryService.IsCodeBusinessExist(req.Code);
+                
+                if(isExistCode)
+                {
+                    throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã doanh nghiệp đã tồn tại!");
+                }
+
                 await _categoryService.CreateBusiness(req);
 
                 var response = new Response()
@@ -147,11 +154,22 @@ namespace VslCrmApiRealTime.Controllers
                     throw new ErrorException((int)HttpStatusCode.BadRequest, "Bad request", "Lỗi cập nhật dữ liệu loại doanh nghiệp trên hệ thống!");
                 }
 
+
                 var data = await _categoryService.GetBusinessById(id);
 
                 if (data == null)
                 {
                     throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi cập nhật dữ liệu loại doanh nghiệp trên hệ thống vì dữ liệu không tồn tại trên hệ thống!");
+                }
+
+                if(req.Code?.ToLower() != data.Code?.ToLower())
+                {
+                    var isExistCode = await _categoryService.IsCodeBusinessExist(req.Code ?? "");
+
+                    if (isExistCode)
+                    {
+                        throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã doanh nghiệp đã tồn tại!");
+                    }
                 }
 
                 if (data != null)

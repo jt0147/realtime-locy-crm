@@ -102,5 +102,19 @@ namespace VslCrmApiRealTime.Interfaces
         Task CreateCustomerType(CreateCustomerTypeRequest req);
         Task UpdateCustomerType(TblDmcustomerType data, UpdateCustomerTypeRequest req);
         Task DeleteCustomerType(TblDmcustomerType data);
+
+        /* Check valid */
+        Task<bool> IsCodeCityExist(string code);
+        Task<bool> IsCodeCountryExist(string code);
+        Task<bool> IsCodePortExist(string code);
+        Task<bool> IsTaxCodePortExist(string code);
+        Task<bool> IsCodePositionExist(string code);
+        Task<bool> IsCodeOfficeExist(string code);
+        Task<bool> IsTaxCodeOfficeExist(string code);
+        Task<bool> IsCodeBusinessExist(string code);
+        Task<bool> IsCodeTransportationExist(string code);
+        Task<bool> IsCodeMajorExist(string code);
+        Task<bool> IsCodeTypeOfCustomerExist(string code);
+        Task<bool> IsCodeCustomerTypeExist(string code);
     }
 }

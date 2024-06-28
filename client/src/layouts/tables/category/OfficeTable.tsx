@@ -23,7 +23,7 @@ import {
     createOffice,
     deleteOffice,
     getAllCountries,
-    getCities,
+    getOffices,
     updateOffice,
 } from "@/api";
 import { Pagination } from "@/components";
@@ -94,13 +94,13 @@ const OfficeTable = () => {
 
     const { isFetching, isLoading, refetch } = useQuery({
         queryKey: [
-            "cities",
+            "offices",
             debouncedSearch, //refetch when search changes
             pagination.pageIndex, //refetch when pagination.pageIndex changes
             pagination.pageSize, //refetch when pagination.pageSize changes
         ],
         queryFn: () =>
-            getCities({
+            getOffices({
                 start: pagination.pageIndex * pagination.pageSize,
                 size: pagination.pageSize,
                 search,
@@ -168,8 +168,11 @@ const OfficeTable = () => {
 
     const handleCreate = useCallback(
         async (data: TCreateOfficeRequest) => {
-            await createMutation.mutateAsync(data);
-            closeCreateModal();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const res: any = await createMutation.mutateAsync(data);
+            if (res.status) {
+                closeCreateModal();
+            }
         },
         [closeCreateModal, createMutation]
     );
@@ -185,8 +188,11 @@ const OfficeTable = () => {
 
     const handleUpdate = useCallback(
         async (data: TUpdateOfficeRequest) => {
-            await updateMutation.mutateAsync(data);
-            closeUpdateModal();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const res: any = await updateMutation.mutateAsync(data);
+            if (res.status) {
+                closeUpdateModal();
+            }
         },
         [closeUpdateModal, updateMutation]
     );
@@ -220,8 +226,7 @@ const OfficeTable = () => {
                             <div className="text-xs">{item.taxCode}</div>
                         </div>
                     );
-
-                case "name":
+                case "office":
                     return (
                         <div className="w-64 space-y-2">
                             <div className="text-sm font-medium first-letter:uppercase">

@@ -107,6 +107,13 @@ namespace VslCrmApiRealTime.Controllers
         {
             try
             {
+                var isExistCode = await _categoryService.IsCodeCustomerTypeExist(req.Code ?? "");
+
+                if (isExistCode)
+                {
+                    throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã loại đánh giá khách hàng đã tồn tại!");
+                }
+
                 await _categoryService.CreateCustomerType(req);
 
                 var response = new Response()
@@ -152,6 +159,16 @@ namespace VslCrmApiRealTime.Controllers
                 if (data == null)
                 {
                     throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi cập nhật loại đánh giá khách hàng trên hệ thống vì dữ liệu không tồn tại!");
+                }
+
+                if(data.Code?.ToLower() != req.Code?.ToLower())
+                {
+                    var isExistCode = await _categoryService.IsCodeCustomerTypeExist(req.Code ?? "");
+
+                    if (isExistCode)
+                    {
+                        throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã loại đánh giá khách hàng đã tồn tại!");
+                    }
                 }
 
                 if (data != null)

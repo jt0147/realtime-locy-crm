@@ -107,6 +107,13 @@ namespace VslCrmApiRealTime.Controllers
         {
             try
             {
+                var isExistCode = await _categoryService.IsCodeMajorExist(req.Code);
+
+                if (isExistCode)
+                {
+                    throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã nghiệp vụ đã tồn tại!");
+                }
+
                 await _categoryService.CreateMajor(req);
 
                 var response = new Response()
@@ -152,6 +159,16 @@ namespace VslCrmApiRealTime.Controllers
                 if (data == null)
                 {
                     throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi cập nhật dữ liệu nghiệp vụ trên hệ thống vì dữ liệu không tồn tại trên hệ thống!");
+                }
+
+                if(data.Code?.ToLower() != req.Code?.ToLower())
+                {
+                    var isExistCode = await _categoryService.IsCodeMajorExist(req.Code ?? "");
+
+                    if (isExistCode)
+                    {
+                        throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã nghiệp vụ đã tồn tại!");
+                    }
                 }
 
                 if (data != null)

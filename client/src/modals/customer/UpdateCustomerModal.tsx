@@ -55,7 +55,9 @@ const UpdateCustomerModal = ({
         enabled:
             localStorage.getItem("token") != null &&
             localStorage.getItem("token") != "" &&
-            data?.idCountry !== undefined,
+            data != null &&
+            data.idCountry !== null &&
+            data.idCountry !== undefined,
     });
 
     const { data: businessesRes } = useQuery({

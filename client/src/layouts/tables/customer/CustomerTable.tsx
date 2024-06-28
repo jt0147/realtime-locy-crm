@@ -271,8 +271,11 @@ const CustomerTable = ({
 
     const handleUpdate = useCallback(
         async (data: TUpdateCustomerRequest) => {
-            await updateMutation.mutateAsync(data);
-            closeUpdateModal();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const res: any = await updateMutation.mutateAsync(data);
+            if (res.status) {
+                closeUpdateModal();
+            }
         },
         [closeUpdateModal, updateMutation]
     );

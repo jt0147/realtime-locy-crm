@@ -107,6 +107,19 @@ namespace VslCrmApiRealTime.Controllers
         {
             try
             {
+                var isExistCode = await _categoryService.IsCodePortExist(req.Code);
+                var isExistTaxCode = await _categoryService.IsTaxCodePortExist(req.TaxCode ?? "");
+
+                if (isExistCode)
+                {
+                    throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã cảng đã tồn tại!");
+                }
+
+                if (isExistTaxCode)
+                {
+                    throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã số thuế cảng đã tồn tại!");
+                }
+
                 await _categoryService.CreatePort(req);
 
                 var response = new Response()
@@ -152,6 +165,26 @@ namespace VslCrmApiRealTime.Controllers
                 if (data == null)
                 {
                     throw new ErrorException((int)HttpStatusCode.NotFound, "Not found", "Lỗi cập nhật dữ liệu cảng trên hệ thống vì dữ liệu không tồn tại trên hệ thống!");
+                }
+
+                if(data.Code?.ToLower() != req.Code?.ToLower())
+                {
+                    var isExistCode = await _categoryService.IsCodePortExist(req.Code ?? "");
+
+                    if (isExistCode)
+                    {
+                        throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã cảng đã tồn tại!");
+                    }
+                }
+
+                if(data.TaxCode?.ToLower() != req.TaxCode?.ToLower())
+                {
+                    var isExistTaxCode = await _categoryService.IsTaxCodePortExist(req.TaxCode ?? "");
+
+                    if (isExistTaxCode)
+                    {
+                        throw new ErrorException((int)HttpStatusCode.Conflict, "Conflict data", "Mã số thuế cảng đã tồn tại!");
+                    }
                 }
 
                 if (data != null)

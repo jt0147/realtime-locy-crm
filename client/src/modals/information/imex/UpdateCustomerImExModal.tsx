@@ -56,6 +56,7 @@ const UpdateCustomerImExModal = ({
             localStorage.getItem("token") != null &&
             localStorage.getItem("token") != "" &&
             data !== null &&
+            data?.idToCountry !== null &&
             data?.idToCountry !== undefined,
     });
 

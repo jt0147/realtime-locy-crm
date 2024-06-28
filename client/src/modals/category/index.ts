@@ -6,6 +6,7 @@ export * from "./department";
 export * from "./major";
 export * from "./office";
 export * from "./operational";
+export * from "./port";
 export * from "./position";
 export * from "./transportation";
 export * from "./typeofcustomer";

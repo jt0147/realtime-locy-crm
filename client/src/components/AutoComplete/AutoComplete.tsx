@@ -33,7 +33,7 @@ const AutoComplete = <T extends Record<string, any>>({
                 setValue(key as string);
             }}
         >
-            {options.map((opt) => (
+            {options?.map((opt) => (
                 <AutocompleteItem key={opt[option.key]} value={opt[option.key]}>
                     {opt[option.label]}
                 </AutocompleteItem>

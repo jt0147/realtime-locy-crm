@@ -43,7 +43,8 @@ const UpdateOfficeModal = ({
             localStorage.getItem("token") != null &&
             localStorage.getItem("token") != "" &&
             data !== null &&
-            data?.idCountry !== undefined,
+            data.idCountry !== null &&
+            data.idCountry !== undefined,
     });
 
     /**
@@ -124,7 +125,9 @@ const UpdateOfficeModal = ({
                                                 key: "id",
                                             }}
                                             value={
-                                                data.idCountry?.toString() || ""
+                                                data.idCountry !== null
+                                                    ? data.idCountry?.toString()
+                                                    : ""
                                             }
                                             onSelectionChange={(val) => {
                                                 setData((prev) =>
@@ -150,7 +153,9 @@ const UpdateOfficeModal = ({
                                                 key: "id",
                                             }}
                                             value={
-                                                data.idCity?.toString() || ""
+                                                data.idCity !== null
+                                                    ? data.idCity?.toString()
+                                                    : ""
                                             }
                                             onSelectionChange={(val) => {
                                                 setData((prev) =>

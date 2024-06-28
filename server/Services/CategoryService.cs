@@ -1471,6 +1471,90 @@ namespace VslCrmApiRealTime.Services
             return data;
         }
 
+        public async Task<bool> IsCodeBusinessExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmloaiDoanhNghieps.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true; 
+        }
+
+        public async Task<bool> IsCodeCityExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmcities.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsCodeCountryExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmcountries.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsCodeCustomerTypeExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmcustomerTypes.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsCodeMajorExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmnghiepVus.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsCodeOfficeExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmvanPhongs.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsCodePortExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmports.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsCodePositionExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmchucVus.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsCodeTransportationExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmloaiHinhVanChuyens.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsCodeTypeOfCustomerExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmphanLoaiKhachHangs.Where(x => x.Code != null && x.Code.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsTaxCodeOfficeExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmvanPhongs.Where(x => x.TaxCode != null && x.TaxCode.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
+        public async Task<bool> IsTaxCodePortExist(string code)
+        {
+            if (code == "") return false;
+            var data = await _db.TblDmports.Where(x => x.TaxCode != null && x.TaxCode.ToLower() == code.ToLower()).FirstOrDefaultAsync();
+            return data == null ? false : true;
+        }
+
         public async Task UpdateBusiness(TblDmloaiDoanhNghiep data, UpdateBusinessRequest req)
         {
             data.Code = req.Code ?? data.Code;

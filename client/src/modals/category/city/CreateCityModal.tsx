@@ -6,7 +6,6 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
-    Textarea,
 } from "@nextui-org/react";
 
 import { AutoComplete } from "@/components";
@@ -19,7 +18,7 @@ const CreateCityModal = ({
     onClose: onCloseProp,
     onSubmit,
     title = "tạo thành phố",
-    size = "sm",
+    size = "md",
     loading,
     data,
     setData,
@@ -50,7 +49,7 @@ const CreateCityModal = ({
                                     }
                                     required={true}
                                 />
-                                <Textarea
+                                <Input
                                     label="Tên VI"
                                     value={data.nameVI}
                                     onChange={(e) =>
@@ -60,7 +59,7 @@ const CreateCityModal = ({
                                         }))
                                     }
                                 />
-                                <Textarea
+                                <Input
                                     label="Tên EN"
                                     value={data.nameEN}
                                     onChange={(e) =>

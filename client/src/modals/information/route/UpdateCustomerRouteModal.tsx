@@ -50,7 +50,8 @@ const UpdateCustomerRouteModal = ({
             localStorage.getItem("token") != null &&
             localStorage.getItem("token") != "" &&
             data !== null &&
-            data?.idQuocGiaDi !== undefined,
+            data.idQuocGiaDi != null &&
+            data.idQuocGiaDi !== undefined,
     });
 
     const { data: portsToRes } = useQuery({
@@ -62,7 +63,8 @@ const UpdateCustomerRouteModal = ({
             localStorage.getItem("token") != null &&
             localStorage.getItem("token") != "" &&
             data !== null &&
-            data?.idQuocGiaDen !== undefined,
+            data.idQuocGiaDen !== null &&
+            data.idQuocGiaDen !== undefined,
     });
 
     /**

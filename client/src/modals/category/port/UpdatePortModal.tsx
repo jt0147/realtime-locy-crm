@@ -23,8 +23,8 @@ const UpdatePortModal = ({
     isOpen,
     onClose: onCloseProp,
     onSubmit,
-    title = "cập nhật thành phố",
-    size = "sm",
+    title = "cập nhật cảng",
+    size = "5xl",
     loading,
     item,
     countries,
@@ -193,7 +193,9 @@ const UpdatePortModal = ({
                                                 key: "id",
                                             }}
                                             value={
-                                                data.idQuocGia?.toString() || ""
+                                                data.idQuocGia != null
+                                                    ? data.idQuocGia?.toString()
+                                                    : ""
                                             }
                                             onSelectionChange={(val) => {
                                                 setData((prev) =>
@@ -219,7 +221,9 @@ const UpdatePortModal = ({
                                                 key: "id",
                                             }}
                                             value={
-                                                data.idCity?.toString() || ""
+                                                data.idCity != null
+                                                    ? data.idCity?.toString()
+                                                    : ""
                                             }
                                             onSelectionChange={(val) => {
                                                 setData((prev) =>

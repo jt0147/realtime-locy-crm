@@ -7,7 +7,6 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
-    Textarea,
 } from "@nextui-org/react";
 import { isEqual } from "lodash";
 
@@ -73,7 +72,7 @@ const UpdateCustomerTypeModal = ({
                                         }
                                         required={true}
                                     />
-                                    <Textarea
+                                    <Input
                                         label="Tên VI"
                                         value={data.nameVI}
                                         onChange={(e) =>
@@ -88,7 +87,7 @@ const UpdateCustomerTypeModal = ({
                                             )
                                         }
                                     />
-                                    <Textarea
+                                    <Input
                                         label="Tên EN"
                                         value={data.nameEN}
                                         onChange={(e) =>

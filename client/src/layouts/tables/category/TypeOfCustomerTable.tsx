@@ -143,8 +143,11 @@ const TypeOfCustomerTable = () => {
 
     const handleCreate = useCallback(
         async (data: TCreateTypeOfCustomerRequest) => {
-            await createMutation.mutateAsync(data);
-            closeCreateModal();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const res: any = await createMutation.mutateAsync(data);
+            if (res.status) {
+                closeCreateModal();
+            }
         },
         [closeCreateModal, createMutation]
     );
@@ -160,8 +163,11 @@ const TypeOfCustomerTable = () => {
 
     const handleUpdate = useCallback(
         async (data: TUpdateTypeOfCustomerRequest) => {
-            await updateMutation.mutateAsync(data);
-            closeUpdateModal();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const res: any = await updateMutation.mutateAsync(data);
+            if (res.status) {
+                closeUpdateModal();
+            }
         },
         [closeUpdateModal, updateMutation]
     );

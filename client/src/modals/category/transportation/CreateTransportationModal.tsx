@@ -6,7 +6,6 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
-    Textarea,
 } from "@nextui-org/react";
 
 import { TCreateTransportationRequest } from "@/types";
@@ -46,7 +45,7 @@ const CreateTransportationModal = ({
                                     }
                                     required={true}
                                 />
-                                <Textarea
+                                <Input
                                     label="Tên VI"
                                     value={data.nameVI}
                                     onChange={(e) =>
@@ -56,7 +55,7 @@ const CreateTransportationModal = ({
                                         }))
                                     }
                                 />
-                                <Textarea
+                                <Input
                                     label="Tên EN"
                                     value={data.nameEN}
                                     onChange={(e) =>
