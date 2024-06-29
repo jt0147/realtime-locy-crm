@@ -37,12 +37,12 @@ namespace VslCrmApiRealTime.Services
 
             if (query.IDDepartment != null)
             {
-                q = q.Where(x => x.IdvanPhong == query.IDDepartment);
+                q = q.Where(x => x.IdphongBan == query.IDDepartment);
             }
 
             if (query.IDOffice != null)
             {
-                q = q.Where(x => x.IdphongBan == query.IDOffice);
+                q = q.Where(x => x.IdvanPhong == query.IDOffice);
             }
 
             if (query.Status)

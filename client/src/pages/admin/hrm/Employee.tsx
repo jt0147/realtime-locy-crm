@@ -685,80 +685,90 @@ const Employee = () => {
                             variant="light"
                             className="min-w-8 aspect-square flex items-center justify-center"
                             color="primary"
-                            onClick={() => refetch()}
+                            onClick={() => {
+                                setQuery({
+                                    idPosition: undefined,
+                                    idDepartment: undefined,
+                                    idOffice: undefined,
+                                    trangThai: true,
+                                });
+                                refetch();
+                            }}
                         >
                             <TbRefresh className="w-4 h-4 flex-shrink-0" />
                         </Button>
                     </Tooltip>
                 </div>
             </div>
-            {/* Display data table */}
-            <Table
-                isHeaderSticky
-                aria-label="Employee data table"
-                checkboxesProps={{
-                    classNames: {
-                        wrapper:
-                            "after:bg-foreground after:text-background text-background",
-                    },
-                }}
-                classNames={{
-                    wrapper: "max-h-[36rem]",
-                    td: "align-top",
-                }}
-            >
-                <TableHeader columns={columns}>
-                    {(column) => (
-                        <TableColumn
-                            className="first-letter:uppercase text-sm font-medium"
-                            key={column.uid}
-                        >
-                            {column.label}
-                        </TableColumn>
-                    )}
-                </TableHeader>
-                <TableBody
-                    items={tableData}
-                    isLoading={isLoading || isFetching}
-                    loadingState={isLoading ? "loading" : "idle"}
-                    loadingContent={<Spinner />}
-                    emptyContent={
-                        <div className="px-2 py-6">
-                            <p className="subtitle first-letter:uppercase">
-                                không có dữ liệu
-                            </p>
-                        </div>
-                    }
+            <div className="bg-white rounded-lg">
+                {/* Display data table */}
+                <Table
+                    isHeaderSticky
+                    aria-label="Employee data table"
+                    checkboxesProps={{
+                        classNames: {
+                            wrapper:
+                                "after:bg-foreground after:text-background text-background",
+                        },
+                    }}
+                    classNames={{
+                        wrapper: "max-h-[36rem]",
+                        td: "align-top",
+                    }}
                 >
-                    {(item) => (
-                        <TableRow key={item.id}>
-                            {(columnKey) => (
-                                <TableCell>
-                                    {renderCell(item, columnKey)}
-                                </TableCell>
-                            )}
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-            {/* Bottom table */}
-            <div className="p-4 flex justify-between gap-4">
-                <div className="text-sm">
-                    {`${pagination.pageIndex * pagination.pageSize + 1} - ${
-                        pagination.pageIndex * pagination.pageSize +
-                        tableData.length
-                    } of ${totalRow}`}
+                    <TableHeader columns={columns}>
+                        {(column) => (
+                            <TableColumn
+                                className="first-letter:uppercase text-sm font-medium"
+                                key={column.uid}
+                            >
+                                {column.label}
+                            </TableColumn>
+                        )}
+                    </TableHeader>
+                    <TableBody
+                        items={tableData}
+                        isLoading={isLoading || isFetching}
+                        loadingState={isLoading ? "loading" : "idle"}
+                        loadingContent={<Spinner />}
+                        emptyContent={
+                            <div className="px-2 py-6">
+                                <p className="subtitle first-letter:uppercase">
+                                    không có dữ liệu
+                                </p>
+                            </div>
+                        }
+                    >
+                        {(item) => (
+                            <TableRow key={item.id}>
+                                {(columnKey) => (
+                                    <TableCell>
+                                        {renderCell(item, columnKey)}
+                                    </TableCell>
+                                )}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+                {/* Bottom table */}
+                <div className="p-4 flex justify-between gap-4">
+                    <div className="text-sm">
+                        {`${pagination.pageIndex * pagination.pageSize + 1} - ${
+                            pagination.pageIndex * pagination.pageSize +
+                            tableData.length
+                        } of ${totalRow}`}
+                    </div>
+                    <Pagination
+                        initialPage={pagination.pageIndex + 1}
+                        total={Math.ceil(totalRow / pagination.pageSize)}
+                        onPaginationChange={(page) =>
+                            setPagination((prev) => ({
+                                ...prev,
+                                pageIndex: page - 1,
+                            }))
+                        }
+                    />
                 </div>
-                <Pagination
-                    initialPage={pagination.pageIndex + 1}
-                    total={Math.ceil(totalRow / pagination.pageSize)}
-                    onPaginationChange={(page) =>
-                        setPagination((prev) => ({
-                            ...prev,
-                            pageIndex: page - 1,
-                        }))
-                    }
-                />
             </div>
         </Fragment>
     );
