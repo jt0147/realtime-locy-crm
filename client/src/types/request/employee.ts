@@ -54,7 +54,7 @@ export type TUpdateEmployeeRequest = {
 };
 
 export type TDeleteEmployeeRequest = {
-    idNhanVien: number;
+    idEmployee: number;
     flagDelete: boolean;
     idUserDelete: number | null;
 };

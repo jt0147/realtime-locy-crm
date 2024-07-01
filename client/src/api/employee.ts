@@ -37,7 +37,7 @@ export const updateEmployee = (payload: TUpdateEmployeeRequest) => {
 
 export const deleteEmployee = (payload: TDeleteEmployeeRequest) => {
     return privateInstance.put(
-        `employee/${payload.idNhanVien}/delete`,
+        `employee/${payload.idEmployee}/delete`,
         payload
     );
 };

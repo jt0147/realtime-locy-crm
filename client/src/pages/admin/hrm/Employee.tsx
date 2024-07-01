@@ -31,7 +31,13 @@ import {
 import { Pagination, Select } from "@/components";
 import { gender } from "@/constants";
 import { useAuth } from "@/contexts";
-import {} from "@/modals";
+import {
+    ChangePasswordModal,
+    ChangePermissionModal,
+    DeleteEmployeeModal,
+    UndeleteEmployeeModal,
+    UpdateEmployeeModal,
+} from "@/modals";
 import { useDebounced } from "@/hooks";
 import {
     TAuthContextProps,
@@ -234,7 +240,7 @@ const Employee = () => {
         setIdDelete(null);
     }, []);
 
-    const handleDeleteModal = useCallback(
+    const handleDelete = useCallback(
         async (data: TDeleteEmployeeRequest) => {
             await deleteMutation.mutateAsync(data);
             closeDeleteModal();
@@ -251,7 +257,7 @@ const Employee = () => {
         setIdDelete(null);
     }, []);
 
-    const handleUndeleteModal = useCallback(
+    const handleUndelete = useCallback(
         async (data: TDeleteEmployeeRequest) => {
             await undeleteMutation.mutateAsync(data);
             closeUndeleteModal();
@@ -571,9 +577,6 @@ const Employee = () => {
             setOffices(officesRes.data as unknown as TOfficeDto[]);
         }
     }, [officesRes]);
-    useEffect(() => {
-        console.log(query);
-    }, [query]);
 
     return (
         <Fragment>
@@ -770,6 +773,76 @@ const Employee = () => {
                     />
                 </div>
             </div>
+            {/* Modals */}
+            {(user?.permission.includes("1048576") ||
+                user?.permission.includes("5000")) && (
+                <UpdateEmployeeModal
+                    isOpen={isOpenUpdateModal}
+                    onClose={closeUpdateModal}
+                    onSubmit={async (item) => {
+                        await handleUpdate(item);
+                    }}
+                    loading={updateMutation.isLoading}
+                    item={updateSelected}
+                    positions={positions}
+                    departments={departments}
+                    offices={offices}
+                />
+            )}
+            {(user?.permission.includes("1048576") ||
+                user?.permission.includes("5000")) && (
+                <DeleteEmployeeModal
+                    isOpen={isOpenDeleteModal}
+                    onClose={closeDeleteModal}
+                    onSubmit={async () => {
+                        await handleDelete({
+                            idEmployee: idDelete as number,
+                            flagDelete: true,
+                            idUserDelete: user?.id as number,
+                        });
+                    }}
+                    loading={deleteMutation.isLoading}
+                />
+            )}
+            {(user?.permission.includes("1048576") ||
+                user?.permission.includes("5000")) && (
+                <UndeleteEmployeeModal
+                    isOpen={isOpenUndeleteModal}
+                    onClose={closeUndeleteModal}
+                    onSubmit={async () => {
+                        await handleUndelete({
+                            idEmployee: idDelete as number,
+                            flagDelete: false,
+                            idUserDelete: null,
+                        });
+                    }}
+                    loading={undeleteMutation.isLoading}
+                />
+            )}
+            {(user?.permission.includes("1048576") ||
+                user?.permission.includes("5000")) && (
+                <ChangePasswordModal
+                    isOpen={isOpenChangePasswordModal}
+                    onClose={closeChangePasswordModal}
+                    onSubmit={async (item) => {
+                        await handleChangePassword(item);
+                    }}
+                    loading={changePasswordMutation.isLoading}
+                    item={updateSelected}
+                />
+            )}
+            {(user?.permission.includes("1048576") ||
+                user?.permission.includes("5000")) && (
+                <ChangePermissionModal
+                    isOpen={isOpenChangePermissionModal}
+                    onClose={closeChangePermissionModal}
+                    onSubmit={async (item) => {
+                        await handleChangePermission(item);
+                    }}
+                    loading={changePermissionMutation.isLoading}
+                    item={updateSelected}
+                />
+            )}
         </Fragment>
     );
 };
