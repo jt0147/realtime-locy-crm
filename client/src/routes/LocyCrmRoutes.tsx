@@ -11,6 +11,7 @@ import {
     CustomerDetail,
     Dashboard,
     Employee,
+    EmployeeGroup,
     ForgotPassword,
     Report,
     Setting,
@@ -48,6 +49,10 @@ const LocyCrmRoutes = () => {
                         <Route
                             path="/employee/new"
                             element={<CreateEmployee />}
+                        />
+                        <Route
+                            path="/employee/group"
+                            element={<EmployeeGroup />}
                         />
 
                         <Route path="/customer" element={<Customer />} />

@@ -58,3 +58,10 @@ export type TDeleteEmployeeRequest = {
     flagDelete: boolean;
     idUserDelete: number | null;
 };
+
+export type TCreateEmployeeGroupRequest = {
+    parentId: number | undefined;
+    nameGroup: string;
+    idNhanVien: number[] | [];
+    flagViewAllGroup: boolean;
+};

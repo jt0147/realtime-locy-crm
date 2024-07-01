@@ -584,6 +584,13 @@ const Employee = () => {
                 <h2 className="title">quản lý nhân viên</h2>
                 <div className="flex gap-2 items-center">
                     <Button
+                        className="inline-block first-letter:uppercase"
+                        color="primary"
+                        onClick={() => navigate("/employee/group")}
+                    >
+                        phân cấp nhân viên
+                    </Button>
+                    <Button
                         className="inline-block first-letter:uppercase text-white"
                         color="success"
                         onClick={() => navigate("/employee/new")}

@@ -40,3 +40,13 @@ export type TEmployeeJobDto = {
     fullNameVI: string;
     fullNameEN: string;
 };
+
+export type TEmployeeGroupDto = {
+    id: number;
+    parentId: number;
+    nameGroup: string;
+    idNhanVien: number;
+    nameVI: string;
+    chucVu: string;
+    flagViewAllGroup: boolean;
+};
