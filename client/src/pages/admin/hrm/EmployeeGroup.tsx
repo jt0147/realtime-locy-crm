@@ -293,7 +293,7 @@ const EmployeeGroup = () => {
                     <Button
                         className="inline-block first-letter:uppercase text-white"
                         color="success"
-                        onClick={() => console.log("tao nhom moi")}
+                        onClick={() => openCreateModal(undefined)}
                     >
                         tạo mới
                     </Button>

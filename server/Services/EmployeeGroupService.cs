@@ -22,20 +22,20 @@ namespace VslCrmApiRealTime.Services
             {
                 parent.NameGroup = req.NameGroup;
                 await _db.SaveChangesAsync();
-
-                foreach (var item in req.IdNhanVien)
+            }
+            
+            foreach (var item in req.IdNhanVien)
+            {
+                var newItem = new TblNhanSuTreelist()
                 {
-                    var newItem = new TblNhanSuTreelist()
-                    {
-                        ParentId = req.ParentId,
-                        NameGroup = "",
-                        IdnhanVien = item,
-                        FlagViewAllGroup = false,
-                    };
+                    ParentId = req.ParentId,
+                    NameGroup = "",
+                    IdnhanVien = item,
+                    FlagViewAllGroup = false,
+                };
 
-                    await _db.TblNhanSuTreelists.AddAsync(newItem);
-                    await _db.SaveChangesAsync();
-                }
+                await _db.TblNhanSuTreelists.AddAsync(newItem);
+                await _db.SaveChangesAsync();
             }
         }
 
