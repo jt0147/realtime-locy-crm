@@ -28,8 +28,8 @@ namespace VslCrmApiRealTime.Services
             {
                 var newItem = new TblNhanSuTreelist()
                 {
-                    ParentId = req.ParentId,
-                    NameGroup = "",
+                    ParentId = req.ParentId || 0,
+                    NameGroup = parent != null ? "" : req.NameGroup,
                     IdnhanVien = item,
                     FlagViewAllGroup = false,
                 };
