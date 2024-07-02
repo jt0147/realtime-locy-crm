@@ -36,6 +36,7 @@ import { TCustomerTableProps } from "./types";
 
 const columns = [
     { label: "trạng thái", uid: "enumDelivery" },
+    { label: "màu tác nghiệp", uid: "colorOperational" },
     { label: "nhân viên", uid: "employee" },
     { label: "mã", uid: "code" },
     { label: "khách hàng", uid: "customer" },
@@ -181,6 +182,18 @@ const CustomerDeliveredTable = ({
                         >
                             {statusCustomer[item.enumDelivery]}
                         </div>
+                    );
+                case "colorOperational":
+                    return (
+                        <div
+                            className="w-16 rounded-lg aspect-square"
+                            style={{
+                                backgroundColor:
+                                    item.colorEndOperational !== ""
+                                        ? item.colorEndOperational
+                                        : "white",
+                            }}
+                        ></div>
                     );
                 case "employee":
                     return (
