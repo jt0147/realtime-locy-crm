@@ -70,6 +70,8 @@ builder.Services.AddScoped<ISysOptionService, SysOptionService>();
 builder.Services.AddScoped<IAuthService<TblSysUser>, AuthService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
