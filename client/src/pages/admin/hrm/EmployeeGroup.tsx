@@ -110,6 +110,7 @@ const EmployeeGroup = () => {
             const result: any = await createMutation.mutateAsync(data);
             if (result.status) {
                 closeCreateModal();
+                setCreateData({ ...initEmployeeGroup });
             }
         },
         [closeCreateModal, createMutation]
